@@ -9,6 +9,11 @@
 
 body {
   font-family: 'Inter', sans-serif;
+  overscroll-behavior: none; /* Previene rebotes en móviles */
+  position: fixed;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
 }
 
 .marker-content {
@@ -34,6 +39,7 @@ body {
 .glass-panel {
   background: rgba(17, 24, 39, 0.85);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px); /* Soporte para Safari */
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -44,4 +50,18 @@ body {
 .menu-item-hover:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Ajustes para pantallas móviles */
+@media (max-width: 768px) {
+  .marker-content {
+    width: 32px;
+    height: 32px;
+    border-width: 1.5px;
+  }
+  
+  .radial-menu-container {
+    transform: scale(0.7);
+    transform-origin: bottom right;
+  }
 }

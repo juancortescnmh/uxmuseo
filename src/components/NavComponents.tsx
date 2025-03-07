@@ -227,7 +227,22 @@ export const NavBar: React.FC<{
         
         {/* Versión móvil: botón de menú */}
         <div className="md:hidden flex items-center ml-2">
-          <MobileMenuButton onUserProfileClick={onUserProfileClick} />
+          <MobileMenuButton 
+            onUserProfileClick={onUserProfileClick}
+            onRouteClick={onRouteClick}
+            onInfoClick={onInfoClick}
+            onHelpClick={onHelpClick}
+            onLocationClick={onLocationClick}
+            onExilioClick={onExilioClick}
+            onGuardianesClick={onGuardianesClick}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            onSearch={onSearch}
+            suggestions={suggestions}
+            showSuggestions={showSuggestions}
+            setShowSuggestions={setShowSuggestions}
+            onSuggestionSelect={onSuggestionSelect}
+          />
         </div>
       </div>
     </div>
@@ -252,17 +267,81 @@ const NavButton: React.FC<{
   );
 };
 
-// Menú móvil
+// Menú móvil mejorado
 const MobileMenuButton: React.FC<{
   onUserProfileClick: () => void;
-}> = ({ onUserProfileClick }) => {
+  onRouteClick: () => void;
+  onInfoClick: () => void;
+  onHelpClick: () => void;
+  onLocationClick: () => void;
+  onExilioClick: () => void;
+  onGuardianesClick: () => void;
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+  onSearch: (e: React.FormEvent) => void;
+  suggestions?: MemoryLocation[];
+  showSuggestions?: boolean;
+  setShowSuggestions?: (show: boolean) => void;
+  onSuggestionSelect?: (location: MemoryLocation) => void;
+}> = ({ 
+  onUserProfileClick,
+  onRouteClick,
+  onInfoClick,
+  onHelpClick,
+  onLocationClick,
+  onExilioClick,
+  onGuardianesClick,
+  searchQuery,
+  setSearchQuery,
+  onSearch,
+  suggestions = [],
+  showSuggestions = false,
+  setShowSuggestions = () => {},
+  onSuggestionSelect = () => {}
+}) => {
   const [open, setOpen] = useState(false);
+  const [showSearchForm, setShowSearchForm] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  
+  // Cerrar menú cuando se hace clic fuera de él
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+  
+  // Obtener color según tipo de memoria (para las sugerencias)
+  const getColorForType = (type: string): string => {
+    const colors: Record<string, string> = {
+      identificados: "#FF9D4D",
+      caracterizados: "#4CAF50",
+      solicitud: "#2196F3",
+      horror: "#F44336",
+      sanaciones: "#9C27B0",
+      exilio: "#EC4899"
+    };
+    return colors[type] || "#FFFFFF";
+  };
+  
+  const handleMenuItemClick = (callback: () => void) => {
+    setOpen(false);
+    callback();
+  };
   
   return (
-    <>
+    <div ref={menuRef}>
       <button 
         onClick={() => setOpen(!open)}
-        className="p-2 bg-white/10 backdrop-blur-md rounded-full transition-all"
+        className="p-2 bg-white/10 backdrop-blur-md rounded-full transition-all hover:bg-white/20"
+        aria-label="Menú"
       >
         {open ? <X size={22} className="text-white" /> : <Menu size={22} className="text-white" />}
       </button>
@@ -270,34 +349,169 @@ const MobileMenuButton: React.FC<{
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="absolute top-full left-0 mt-2 ml-4 bg-black/80 backdrop-blur-md
-                      border border-white/10 rounded-lg w-48 overflow-hidden shadow-xl"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-x-0 top-[70px] mx-4 bg-black/90 backdrop-blur-md
+                      border border-white/10 rounded-xl overflow-hidden shadow-xl z-50"
           >
-            <div className="py-2">
-              <MobileMenuItem icon={<Search size={18} />} label="Buscar" />
-              <MobileMenuItem icon={<Map size={18} />} label="Recorrido" />
-              <MobileMenuItem icon={<Info size={18} />} label="Información" />
-              <MobileMenuItem icon={<HelpCircle size={18} />} label="Ayuda" />
-              <MobileMenuItem icon={<MapPin size={18} />} label="Ubicación" />
-              
-              <div className="border-t border-white/10 my-1"></div>
-              
-              <MobileMenuItem 
-                icon={<User size={18} />} 
-                label="Perfil" 
-                onClick={() => {
+            {showSearchForm ? (
+              <div className="p-4">
+                <div className="flex items-center mb-2">
+                  <button 
+                    onClick={() => setShowSearchForm(false)}
+                    className="text-white/80 hover:text-white mr-3"
+                  >
+                    <ChevronRight className="rotate-180" size={20} />
+                  </button>
+                  <h3 className="text-white font-medium">Buscar</h3>
+                </div>
+                
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  onSearch(e);
+                  setShowSearchForm(false);
                   setOpen(false);
-                  onUserProfileClick();
-                }}
-              />
-            </div>
+                }} className="relative">
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    placeholder="Buscar territorio de memoria"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onFocus={() => setShowSuggestions(true)}
+                    className="w-full py-2.5 pl-4 pr-10 bg-white/10 backdrop-blur-md 
+                             border border-white/20 rounded-full text-white placeholder-white/60
+                             focus:outline-none focus:border-white/30 transition-all"
+                    autoFocus
+                  />
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearchQuery('');
+                        setShowSuggestions(false);
+                      }}
+                      className="absolute right-12 top-1/2 transform -translate-y-1/2 text-white/60
+                                hover:text-white/90 p-1 rounded-full transition-colors"
+                    >
+                      <X size={16} />
+                    </button>
+                  )}
+                  <button 
+                    type="submit" 
+                    className="absolute right-1 top-1/2 -translate-y-1/2 p-2 bg-amber-500
+                              hover:bg-amber-600 rounded-full transition-colors"
+                  >
+                    <Search size={18} className="text-white" />
+                  </button>
+                </form>
+                
+                {/* Lista de sugerencias */}
+                <AnimatePresence>
+                  {showSuggestions && suggestions.length > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      transition={{ duration: 0.2 }}
+                      className="mt-2 bg-black/60 backdrop-blur-lg rounded-lg overflow-hidden border border-white/10 shadow-lg"
+                    >
+                      <div className="py-1 max-h-60 overflow-y-auto">
+                        {suggestions.map((location) => (
+                          <button
+                            key={location.id}
+                            onClick={() => {
+                              onSuggestionSelect(location);
+                              setShowSearchForm(false);
+                              setOpen(false);
+                            }}
+                            className="w-full px-4 py-3 text-left flex items-start hover:bg-white/10 transition-colors"
+                          >
+                            <div className="flex-shrink-0 mr-3 mt-0.5">
+                              <div 
+                                className="w-3 h-3 rounded-full" 
+                                style={{
+                                  backgroundColor: getColorForType(location.type)
+                                }}
+                              />
+                            </div>
+                            <div className="flex-grow">
+                              <div className="text-white font-medium">{location.title}</div>
+                              <div className="text-white/60 text-sm flex flex-wrap gap-1 items-center">
+                                {location.code && (
+                                  <span className="bg-white/10 px-1.5 py-0.5 rounded text-xs">{location.code}</span>
+                                )}
+                                <span>{location.region} · {location.department}</span>
+                              </div>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <div className="py-2 max-h-[80vh] overflow-y-auto">
+                <MobileMenuItem 
+                  icon={<Search size={18} />} 
+                  label="Buscar" 
+                  onClick={() => setShowSearchForm(true)}
+                />
+                <MobileMenuItem 
+                  icon={<Map size={18} />} 
+                  label="Recorrido" 
+                  onClick={() => handleMenuItemClick(onRouteClick)}
+                />
+                <MobileMenuItem 
+                  icon={<Info size={18} />} 
+                  label="Información" 
+                  onClick={() => handleMenuItemClick(onInfoClick)}
+                />
+                <MobileMenuItem 
+                  icon={<HelpCircle size={18} />} 
+                  label="Ayuda" 
+                  onClick={() => handleMenuItemClick(onHelpClick)}
+                />
+                <MobileMenuItem 
+                  icon={<MapPin size={18} />} 
+                  label="Ubicación" 
+                  onClick={() => handleMenuItemClick(onLocationClick)}
+                />
+                <MobileMenuItem 
+                  icon={
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EC4899" strokeWidth="2" 
+                         strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M10 3.2A9 9 0 1 0 20.8 14a1 1 0 0 0-1-1H13a1 1 0 0 1-1-1V4.5a1 1 0 0 0-.5-.9 1 1 0 0 0-1.2.1L10 3.2Z"/>
+                      <path d="M3 9h2"/>
+                      <path d="M8 3.2V5"/>
+                      <path d="M11 3h2"/>
+                    </svg>
+                  } 
+                  label="Exilio" 
+                  onClick={() => handleMenuItemClick(onExilioClick)}
+                />
+                <MobileMenuItem 
+                  icon={<Globe size={18} />} 
+                  label="Guardianes de Memoria" 
+                  onClick={() => handleMenuItemClick(onGuardianesClick)} 
+                />
+                
+                <div className="border-t border-white/10 my-1"></div>
+                
+                <MobileMenuItem 
+                  icon={<User size={18} />} 
+                  label="Perfil" 
+                  onClick={() => handleMenuItemClick(onUserProfileClick)}
+                />
+              </div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </div>
   );
 };
 
@@ -386,7 +600,7 @@ export const SideButtons: React.FC<{
   const [showLayersPanel, setShowLayersPanel] = useState(false);
   
   return (
-    <div className="fixed bottom-8 left-8 z-40 flex flex-col items-start gap-4">
+    <div className="fixed bottom-4 left-4 md:bottom-8 md:left-8 z-40 flex flex-col items-start gap-3 md:gap-4">
       {/* Panel de capas */}
       <AnimatePresence>
         {showLayersPanel && (
@@ -394,7 +608,7 @@ export const SideButtons: React.FC<{
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="absolute bottom-16 left-full ml-4 bg-black/70 backdrop-blur-md rounded-lg p-4 
+            className="absolute bottom-16 left-0 md:left-full md:ml-4 bg-black/80 backdrop-blur-md rounded-lg p-3 md:p-4
                       border border-white/10 w-64 shadow-lg"
           >
             <h3 className="text-white font-medium text-sm mb-3">Capas Ambientales</h3>
@@ -436,44 +650,48 @@ export const SideButtons: React.FC<{
       {/* Botón principal de capas */}
       <button 
         onClick={() => setShowLayersPanel(!showLayersPanel)}
-        className="bg-black/50 backdrop-blur-md rounded-full px-4 py-2.5 
+        className="bg-black/50 backdrop-blur-md rounded-full 
                   flex items-center gap-2 shadow-lg text-white
-                  border border-white/10 transition-all hover:bg-black/60"
+                  border border-white/10 transition-all hover:bg-black/60
+                  px-3 py-2 md:px-4 md:py-2.5"
       >
-        <Layers size={18} />
-        <span>Capas</span>
+        <Layers size={16} className="md:w-[18px] md:h-[18px]" />
+        <span className="text-sm md:text-base">Capas</span>
       </button>
       
       {/* Controles de zoom */}
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2 md:gap-3">
         <button 
           onClick={onZoomIn}
-          className="bg-black/50 backdrop-blur-md rounded-full p-2.5 
+          className="bg-black/50 backdrop-blur-md rounded-full
                     shadow-lg text-white border border-white/10 
-                    hover:bg-black/60 transition-all"
+                    hover:bg-black/60 transition-all
+                    p-2 md:p-2.5"
           title="Acercar"
         >
-          <ZoomIn size={18} />
+          <ZoomIn size={16} className="md:w-[18px] md:h-[18px]" />
         </button>
         
         <button 
           onClick={onZoomOut}
-          className="bg-black/50 backdrop-blur-md rounded-full p-2.5 
+          className="bg-black/50 backdrop-blur-md rounded-full
                     shadow-lg text-white border border-white/10 
-                    hover:bg-black/60 transition-all"
+                    hover:bg-black/60 transition-all
+                    p-2 md:p-2.5"
           title="Alejar"
         >
-          <ZoomOut size={18} />
+          <ZoomOut size={16} className="md:w-[18px] md:h-[18px]" />
         </button>
         
         <button 
           onClick={onResetRotation}
-          className="bg-black/50 backdrop-blur-md rounded-full p-2.5 
+          className="bg-black/50 backdrop-blur-md rounded-full
                     shadow-lg text-white border border-white/10 
-                    hover:bg-black/60 transition-all"
+                    hover:bg-black/60 transition-all
+                    p-2 md:p-2.5"
           title="Restablecer rotación"
         >
-          <Compass size={18} />
+          <Compass size={16} className="md:w-[18px] md:h-[18px]" />
         </button>
       </div>
     </div>

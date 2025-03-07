@@ -28,9 +28,9 @@ export const LocationInfo: React.FC<LocationInfoProps> = ({
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -50 }}
       transition={{ duration: 0.3 }}
-      className="absolute top-20 left-0 z-50 max-w-lg"
+      className="absolute top-20 left-0 z-50 max-w-lg w-full sm:w-auto md:max-w-lg"
     >
-      <div className="bg-black/40 backdrop-blur-xl rounded-r-lg overflow-hidden border border-white/20 shadow-lg">
+      <div className="bg-black/60 backdrop-blur-xl rounded-r-lg overflow-hidden border border-white/20 shadow-lg max-h-[80vh] overflow-y-auto">
         {/* Header con difuminado */}
         <div className="relative overflow-hidden rounded-tr-lg bg-gradient-to-r from-black/60 to-black/30">
           <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent opacity-20"></div>
@@ -58,21 +58,21 @@ export const LocationInfo: React.FC<LocationInfoProps> = ({
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex px-6 border-b border-white/10">
+        <div className="flex px-2 md:px-6 border-b border-white/10 overflow-x-auto whitespace-nowrap">
           <button 
-            className={`px-4 py-3 text-sm transition-colors ${activeTab === 'general' ? 'text-white border-b-2 border-white' : 'text-white/60 hover:text-white/80'}`}
+            className={`px-3 md:px-4 py-3 text-xs md:text-sm transition-colors ${activeTab === 'general' ? 'text-white border-b-2 border-white' : 'text-white/60 hover:text-white/80'}`}
             onClick={() => setActiveTab('general')}
           >
             Información General
           </button>
           <button 
-            className={`px-4 py-3 text-sm transition-colors ${activeTab === 'ubicacion' ? 'text-white border-b-2 border-white' : 'text-white/60 hover:text-white/80'}`}
+            className={`px-3 md:px-4 py-3 text-xs md:text-sm transition-colors ${activeTab === 'ubicacion' ? 'text-white border-b-2 border-white' : 'text-white/60 hover:text-white/80'}`}
             onClick={() => setActiveTab('ubicacion')}
           >
             Ubicación y Contexto
           </button>
           <button 
-            className={`px-4 py-3 text-sm transition-colors ${activeTab === 'docs' ? 'text-white border-b-2 border-white' : 'text-white/60 hover:text-white/80'}`}
+            className={`px-3 md:px-4 py-3 text-xs md:text-sm transition-colors ${activeTab === 'docs' ? 'text-white border-b-2 border-white' : 'text-white/60 hover:text-white/80'}`}
             onClick={() => setActiveTab('docs')}
           >
             Documentación
