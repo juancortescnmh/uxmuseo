@@ -187,7 +187,10 @@ const DemoMode: React.FC<DemoModeProps> = ({
         <div className="flex-1 flex flex-col items-center justify-center">
           <RadialMenu
             onSelect={handleMenuSelect}
-            onStartTour={onStartTour} // Pasar la función para iniciar el tour
+            onStartTour={() => {
+              console.log("Demo Mode - Botón de inicio de tour presionado");
+              if (onStartTour) onStartTour();
+            }} // Pasar la función para iniciar el tour
             isDemoMode={true}
             highlightSection={currentSection}
             selectedMacro={selectedMacro}

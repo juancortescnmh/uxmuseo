@@ -64,12 +64,12 @@ body {
   }
   
   .radial-menu-container {
-    transform: scale(0.7);
-    transform-origin: bottom right;
-    will-change: transform; /* Mejora rendimiento de animaciones */
+    transform: scale(0.6) !important; /* Escala reducida */
+    transform-origin: bottom right !important;
+    will-change: transform !important; /* Mejora rendimiento de animaciones */
     position: fixed !important; /* Asegurar posición fija */
-    bottom: 0px !important;
-    right: 0px !important;
+    bottom: -20px !important; /* Más abajo del borde inferior */
+    right: -20px !important; /* Más a la derecha del borde derecho */
     z-index: 9000 !important; /* Asegurar que esté por encima de otros elementos */
   }
   

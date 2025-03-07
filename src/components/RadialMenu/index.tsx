@@ -122,13 +122,20 @@ const RadialMenu: React.FC<RadialMenuProps> = ({
     
     // Si estamos en modo demo y hay una función para iniciar el tour, la llamamos
     if (isDemoMode && onStartTour) {
+      console.log("Demo Mode - Iniciando tour");
+      onStartTour();
+    } else if (onStartTour) {
+      // Si no estamos en demo pero hay una función para iniciar el tour
+      console.log("Normal Mode - Iniciando tour");
       onStartTour();
     } else if (onResetView) {
       // Al dar click al centro de la rueda en 'lugares de memoria' nos devuelve 
       // a ver el mapa completo de colombia para empezar un nuevo recorrido desde 0
+      console.log("Reseteando vista");
       onResetView();
     } else {
       // En modo normal, seleccionamos el centro como una región
+      console.log("Seleccionando centro como una región");
       onSelect('macro', 'center');
     }
   };

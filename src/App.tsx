@@ -278,8 +278,13 @@ export default function App() {
    * Inicia Tour Guiado
    */
   async function startTour() {
-    if (!mapRef.current || !mapLoadedRef.current) return;
+    console.log("Función startTour llamada en App.tsx");
+    if (!mapRef.current || !mapLoadedRef.current) {
+      console.error("No hay mapa disponible para iniciar el tour");
+      return;
+    }
     
+    console.log("Iniciando startGuidedTour...");
     startGuidedTour(
       mapRef,
       mapLoadedRef,
@@ -638,25 +643,36 @@ export default function App() {
               <div 
                 style={{
                   position: 'fixed',
-                  bottom: '0px',
-                  right: '0px',
-                  zIndex: 9000
+                  bottom: '5px',
+                  right: '5px',
+                  zIndex: 9000,
+                  width: '260px',
+                  height: '260px',
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  alignItems: 'flex-end'
                 }}
               >
                 <RadialMenu
                   onSelect={handleRadialSelect}
-                  onStartTour={startTour}
-                  onResetView={() => resetMap(
-                    mapRef,
-                    mapContainerRef,
-                    markersRef,
-                    mapLoadedRef,
-                    setIsMapLoaded,
-                    setMapError,
-                    droneActive,
-                    setDroneActive,
-                    handleMapReady
-                  )}
+                  onStartTour={() => {
+                    console.log("Iniciando tour desde App");
+                    startTour();
+                  }}
+                  onResetView={() => {
+                    console.log("Reseteando mapa");
+                    resetMap(
+                      mapRef,
+                      mapContainerRef,
+                      markersRef,
+                      mapLoadedRef,
+                      setIsMapLoaded,
+                      setMapError,
+                      droneActive,
+                      setDroneActive,
+                      handleMapReady
+                    );
+                  }}
                   isDemoMode={false}
                   selectedMacro={appState.selectedMacroRegion}
                 />
