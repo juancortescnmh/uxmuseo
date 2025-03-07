@@ -20,13 +20,19 @@ const CenterSection: React.FC<CenterSectionProps> = ({
 
   return (
     <motion.g
-      onClick={onClick}
-      style={{ cursor: 'pointer' }}
+      onClick={() => {
+        console.log("Botón centro - clic detectado");
+        onClick(); // Llamar a la función proporcionada
+      }}
+      style={{ 
+        cursor: 'pointer',
+        filter: 'drop-shadow(0 0 4px rgba(255, 215, 0, 0.5))' // Añade un halo dorado sutil 
+      }}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.98 }}
       initial={{ scale: 0.9, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
     >
       {/* Círculo central */}
       <circle

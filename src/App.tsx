@@ -637,30 +637,30 @@ export default function App() {
             onResetRotation={handleResetRotation}
           />
 
-          {/* RadialMenu - Siempre en la esquina inferior derecha */}
+          {/* POSICIONADO EXACTAMENTE EN LA ESQUINA INFERIOR DERECHA */}
           {appState.stage !== 'tour' && (
             <>
+              {/* MENÚ RADIAL ABSOLUTAMENTE FIJADO */}
               <div 
                 style={{
                   position: 'fixed',
-                  bottom: '5px',
-                  right: '5px',
-                  zIndex: 9000,
-                  width: '260px',
-                  height: '260px',
-                  display: 'flex',
-                  justifyContent: 'flex-end',
-                  alignItems: 'flex-end'
+                  bottom: '0',
+                  right: '0',
+                  width: '200px',
+                  height: '200px',
+                  zIndex: 9999,
+                  transform: 'translate(30%, 30%) scale(0.65)',
+                  background: 'transparent' 
                 }}
               >
                 <RadialMenu
                   onSelect={handleRadialSelect}
                   onStartTour={() => {
-                    console.log("Iniciando tour desde App");
+                    alert("Iniciando tour");
                     startTour();
                   }}
                   onResetView={() => {
-                    console.log("Reseteando mapa");
+                    alert("Reseteando mapa");
                     resetMap(
                       mapRef,
                       mapContainerRef,

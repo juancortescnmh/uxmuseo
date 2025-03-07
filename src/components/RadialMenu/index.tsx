@@ -109,32 +109,19 @@ const RadialMenu: React.FC<RadialMenuProps> = ({
 
   // Clic en el centro
   const handleCenterClick = () => {
-    // Si hay un departamento seleccionado, lo deseleccionamos
-    if (selectedDepartment) {
-      setSelectedDepartment(null);
-      setShowMemory(false);
-      // Volvemos al nivel de macroregión
-      if (selectedMacro) {
-        onSelect('macro', selectedMacro as unknown as string);
-      }
+    // *** SIEMPRE INICIAR TOUR SI ESTÁ DISPONIBLE ***
+    if (onStartTour) {
+      console.log("🚀 INICIANDO TOUR DESDE CENTRO");
+      alert("Iniciando recorrido guiado");
+      onStartTour();
       return;
     }
     
-    // Si estamos en modo demo y hay una función para iniciar el tour, la llamamos
-    if (isDemoMode && onStartTour) {
-      console.log("Demo Mode - Iniciando tour");
-      onStartTour();
-    } else if (onStartTour) {
-      // Si no estamos en demo pero hay una función para iniciar el tour
-      console.log("Normal Mode - Iniciando tour");
-      onStartTour();
-    } else if (onResetView) {
-      // Al dar click al centro de la rueda en 'lugares de memoria' nos devuelve 
-      // a ver el mapa completo de colombia para empezar un nuevo recorrido desde 0
+    // Como respaldo, si no hay función de tour
+    if (onResetView) {
       console.log("Reseteando vista");
       onResetView();
     } else {
-      // En modo normal, seleccionamos el centro como una región
       console.log("Seleccionando centro como una región");
       onSelect('macro', 'center');
     }

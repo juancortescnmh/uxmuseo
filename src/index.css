@@ -62,26 +62,16 @@ body {
     height: 32px;
     border-width: 1.5px;
   }
-  
-  .radial-menu-container {
-    transform: scale(0.6) !important; /* Escala reducida */
-    transform-origin: bottom right !important;
-    will-change: transform !important; /* Mejora rendimiento de animaciones */
-    position: fixed !important; /* Asegurar posición fija */
-    bottom: -20px !important; /* Más abajo del borde inferior */
-    right: -20px !important; /* Más a la derecha del borde derecho */
-    z-index: 9000 !important; /* Asegurar que esté por encima de otros elementos */
-  }
-  
-  /* Optimización de elementos animados */
-  .motion-safe-transform {
-    will-change: transform;
-    backface-visibility: hidden;
-    perspective: 1000px;
-  }
-  
-  /* Reducir transparencias en móviles para mejorar rendimiento */
-  .glass-panel {
-    background: rgba(0, 0, 0, 0.85);
-  }
+}
+
+/* Optimización de elementos animados */
+.motion-safe-transform {
+  will-change: transform;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Reducir transparencias en móviles para mejorar rendimiento */
+.glass-panel {
+  background: rgba(0, 0, 0, 0.85);
 }
