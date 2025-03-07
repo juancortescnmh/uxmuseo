@@ -14,6 +14,9 @@ body {
   overflow: hidden;
   width: 100%;
   height: 100%;
+  touch-action: manipulation; /* Mejora el rendimiento táctil y elimina el delay de 300ms */
+  -webkit-tap-highlight-color: transparent; /* Elimina el highlight al tocar */
+  -webkit-overflow-scrolling: touch; /* Permite scroll suave en iOS */
 }
 
 .marker-content {
@@ -63,5 +66,18 @@ body {
   .radial-menu-container {
     transform: scale(0.7);
     transform-origin: bottom right;
+    will-change: transform; /* Mejora rendimiento de animaciones */
+  }
+  
+  /* Optimización de elementos animados */
+  .motion-safe-transform {
+    will-change: transform;
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+  
+  /* Reducir transparencias en móviles para mejorar rendimiento */
+  .glass-panel {
+    background: rgba(0, 0, 0, 0.85);
   }
 }
