@@ -352,9 +352,9 @@ const MobileMenuButton: React.FC<{
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.15, type: "tween" }} {/* Más rápido y sin curva de animación */}
             className="fixed inset-x-0 top-[70px] mx-4 bg-black/90 backdrop-blur-md
-                      border border-white/10 rounded-xl overflow-hidden shadow-xl z-50"
+                      border border-white/10 rounded-xl overflow-hidden shadow-xl z-50 motion-safe-transform"
           >
             {showSearchForm ? (
               <div className="p-4">
@@ -412,11 +412,11 @@ const MobileMenuButton: React.FC<{
                 <AnimatePresence>
                   {showSuggestions && suggestions.length > 0 && (
                     <motion.div
-                      initial={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, y: 5 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      transition={{ duration: 0.2 }}
-                      className="mt-2 bg-black/60 backdrop-blur-lg rounded-lg overflow-hidden border border-white/10 shadow-lg"
+                      exit={{ opacity: 0, y: 5 }}
+                      transition={{ duration: 0.1, type: "tween" }}
+                      className="mt-2 bg-black/80 backdrop-blur-lg rounded-lg overflow-hidden border border-white/10 shadow-lg motion-safe-transform"
                     >
                       <div className="py-1 max-h-60 overflow-y-auto">
                         {suggestions.map((location) => (
@@ -605,11 +605,12 @@ export const SideButtons: React.FC<{
       <AnimatePresence>
         {showLayersPanel && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="absolute bottom-16 left-0 md:left-full md:ml-4 bg-black/80 backdrop-blur-md rounded-lg p-3 md:p-4
-                      border border-white/10 w-64 shadow-lg"
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.15, type: "tween" }}
+            className="absolute bottom-16 left-0 md:left-full md:ml-4 bg-black/90 backdrop-blur-md rounded-lg p-3 md:p-4
+                      border border-white/10 w-64 shadow-lg motion-safe-transform"
           >
             <h3 className="text-white font-medium text-sm mb-3">Capas Ambientales</h3>
             

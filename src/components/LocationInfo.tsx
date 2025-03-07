@@ -24,11 +24,11 @@ export const LocationInfo: React.FC<LocationInfoProps> = ({
 
   return (
     <motion.div 
-      initial={{ opacity: 0, x: -50 }}
+      initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -50 }}
-      transition={{ duration: 0.3 }}
-      className="absolute top-20 left-0 z-50 max-w-lg w-full sm:w-auto md:max-w-lg"
+      exit={{ opacity: 0, x: -20 }}
+      transition={{ duration: 0.2, type: "tween" }}
+      className="absolute top-20 left-0 z-50 max-w-lg w-full sm:w-auto md:max-w-lg motion-safe-transform"
     >
       <div className="bg-black/60 backdrop-blur-xl rounded-r-lg overflow-hidden border border-white/20 shadow-lg max-h-[80vh] overflow-y-auto">
         {/* Header con difuminado */}
@@ -85,11 +85,11 @@ export const LocationInfo: React.FC<LocationInfoProps> = ({
             {activeTab === 'general' && (
               <motion.div
                 key="general"
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-                className="space-y-4"
+                exit={{ opacity: 0, y: -5 }}
+                transition={{ duration: 0.15, type: "tween" }}
+                className="space-y-4 motion-safe-transform"
               >
                 <p className="text-white/80 text-sm leading-relaxed">{description}</p>
                 
@@ -120,11 +120,11 @@ export const LocationInfo: React.FC<LocationInfoProps> = ({
             {activeTab === 'ubicacion' && (
               <motion.div
                 key="ubicacion"
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-                className="space-y-4"
+                exit={{ opacity: 0, y: -5 }}
+                transition={{ duration: 0.15, type: "tween" }}
+                className="space-y-4 motion-safe-transform"
               >
                 <div className="flex gap-4 mb-4">
                   <div className="w-1/2 bg-white/5 rounded-lg p-4 border border-white/10">
@@ -154,10 +154,7 @@ export const LocationInfo: React.FC<LocationInfoProps> = ({
                     <span className="text-white/40 text-xs">Imagen satelital no disponible</span>
                   </div>
                   
-                  <div className="flex items-center justify-between mt-3">
-                    <div className="text-white/80 text-xs">
-                      Coordenadas: 4.30, -74.3
-                    </div>
+                  <div className="flex items-center justify-end mt-3">
                     <button className="text-white/70 text-xs hover:text-white transition-colors">
                       Ampliar Vista
                     </button>
@@ -180,11 +177,11 @@ export const LocationInfo: React.FC<LocationInfoProps> = ({
             {activeTab === 'docs' && (
               <motion.div
                 key="docs"
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-                className="space-y-4"
+                exit={{ opacity: 0, y: -5 }}
+                transition={{ duration: 0.15, type: "tween" }}
+                className="space-y-4 motion-safe-transform"
               >
                 <p className="text-white/70 text-sm mb-4">
                   La documentación asociada a este lugar de memoria incluye informes, testimonios y registros históricos que ayudan a preservar la memoria colectiva.

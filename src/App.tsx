@@ -632,9 +632,9 @@ export default function App() {
             onResetRotation={handleResetRotation}
           />
 
-          {/* RadialMenu */}
+          {/* RadialMenu - Siempre en la esquina inferior derecha */}
           {appState.stage !== 'tour' && (
-            <div className="flex flex-col items-center absolute bottom-10 right-6 md:bottom-20 md:right-20 z-40">
+            <div className="flex flex-col items-center absolute bottom-20 right-20 z-40">
               <div className="radial-menu-container">
                 <RadialMenu
                   onSelect={handleRadialSelect}

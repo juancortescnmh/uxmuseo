@@ -155,8 +155,8 @@ const RadialMenu: React.FC<RadialMenuProps> = ({
       className={`
         ${isDemoMode 
           ? 'fixed inset-0 flex items-center justify-center z-50 demo-radial-menu' 
-          : 'radial-menu-container'}
-        transition-opacity duration-700 ease-in-out
+          : 'radial-menu-container motion-safe-transform'}
+        transition-opacity duration-300 ease-in-out
         ${isVisible ? 'opacity-100' : 'opacity-0'}
       `}
     >
@@ -261,10 +261,10 @@ const RadialMenu: React.FC<RadialMenuProps> = ({
           <AnimatePresence>
             {showMacro && (
               <motion.g
-                initial={{ opacity: 0, scale: 0.8 }}
+                initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.5 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3, type: "tween" }}
               >
                 <MacroSection
                   selectedMacro={selectedMacro}
@@ -281,10 +281,10 @@ const RadialMenu: React.FC<RadialMenuProps> = ({
           <AnimatePresence>
             {showDept && (
               <motion.g
-                initial={{ opacity: 0, scale: 0.8 }}
+                initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.5 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3, type: "tween" }}
               >
                 <DeptSection
                   selectedMacro={selectedMacro}
@@ -301,10 +301,10 @@ const RadialMenu: React.FC<RadialMenuProps> = ({
           <AnimatePresence>
             {showMemory && (
               <motion.g
-                initial={{ opacity: 0, scale: 0.8 }}
+                initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.5 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3, type: "tween" }}
               >
                 <MemorySection
                   hoveredItem={hoveredItem}
