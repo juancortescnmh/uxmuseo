@@ -638,8 +638,8 @@ export default function App() {
               <div 
                 style={{
                   position: 'fixed',
-                  bottom: '20px',
-                  right: '20px',
+                  bottom: '0px',
+                  right: '0px',
                   zIndex: 9000
                 }}
               >

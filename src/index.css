@@ -68,8 +68,8 @@ body {
     transform-origin: bottom right;
     will-change: transform; /* Mejora rendimiento de animaciones */
     position: fixed !important; /* Asegurar posición fija */
-    bottom: 20px !important;
-    right: 20px !important;
+    bottom: 0px !important;
+    right: 0px !important;
     z-index: 9000 !important; /* Asegurar que esté por encima de otros elementos */
   }
   
