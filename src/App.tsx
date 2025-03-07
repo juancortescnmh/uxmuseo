@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { AnimatePresence } from 'framer-motion';
-import { Info } from 'lucide-react';
+import { Info, ChevronRight } from 'lucide-react';
 
 // Componentes
 import RadialMenu from './components/RadialMenu';
