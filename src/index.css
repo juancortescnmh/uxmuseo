@@ -67,6 +67,9 @@ body {
     transform: scale(0.7);
     transform-origin: bottom right;
     will-change: transform; /* Mejora rendimiento de animaciones */
+    position: fixed !important; /* Asegurar posición fija */
+    bottom: 20px !important;
+    right: 20px !important;
   }
   
   /* Optimización de elementos animados */

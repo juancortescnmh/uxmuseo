@@ -634,8 +634,9 @@ export default function App() {
 
           {/* RadialMenu - Siempre en la esquina inferior derecha */}
           {appState.stage !== 'tour' && (
-            <div className="flex flex-col items-center absolute bottom-20 right-20 z-40">
-              <div className="radial-menu-container">
+            <>
+              {/* El menú radial con posición fija */}
+              <div className="radial-menu-container z-40">
                 <RadialMenu
                   onSelect={handleRadialSelect}
                   onStartTour={startTour}
@@ -655,14 +656,16 @@ export default function App() {
                 />
               </div>
               
-              {/* LocationContext centralizado debajo del menú radial */}
+              {/* LocationContext en el centro inferior */}
               {Object.keys(currentLocation).length > 0 && (
-                <LocationContext 
-                  currentLocation={currentLocation}
-                  isActive={true}
-                />
+                <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-40">
+                  <LocationContext 
+                    currentLocation={currentLocation}
+                    isActive={true}
+                  />
+                </div>
               )}
-            </div>
+            </>
           )}
 
           {/* Panel de información detallada de lugar de memoria */}

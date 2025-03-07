@@ -141,25 +141,6 @@ export const LocationInfo: React.FC<LocationInfoProps> = ({
                   El entorno geográfico y social de este lugar contribuye significativamente a su valor como espacio de memoria. La ubicación tiene un significado histórico dentro del contexto del conflicto armado y los procesos de construcción de paz en Colombia.
                 </p>
                 
-                <div className="bg-white/5 rounded-lg p-4 border border-white/10">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <MapPin size={14} className="text-white/60" />
-                      <span className="text-white/90 text-sm font-medium">Localización</span>
-                    </div>
-                    <span className="text-white/50 text-xs">Vista Satelital</span>
-                  </div>
-                  
-                  <div className="rounded border border-white/10 overflow-hidden h-40 bg-black/20 flex items-center justify-center">
-                    <span className="text-white/40 text-xs">Imagen satelital no disponible</span>
-                  </div>
-                  
-                  <div className="flex items-center justify-end mt-3">
-                    <button className="text-white/70 text-xs hover:text-white transition-colors">
-                      Ampliar Vista
-                    </button>
-                  </div>
-                </div>
                 
                 <div className="bg-white/5 rounded-lg p-4 border border-white/10">
                   <div className="flex items-center gap-2 mb-3">
