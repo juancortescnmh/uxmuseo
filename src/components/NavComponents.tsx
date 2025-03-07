@@ -590,12 +590,14 @@ export const SideButtons: React.FC<{
   onZoomIn: () => void;
   onZoomOut: () => void;
   onResetRotation: () => void;
+  onStartTour?: () => void;
 }> = ({
   activeLayers,
   onToggleLayer,
   onZoomIn,
   onZoomOut,
-  onResetRotation
+  onResetRotation,
+  onStartTour
 }) => {
   const [showLayersPanel, setShowLayersPanel] = useState(false);
   
@@ -647,6 +649,21 @@ export const SideButtons: React.FC<{
           </motion.div>
         )}
       </AnimatePresence>
+      
+      {/* Botón "Ir al mapa" */}
+      {onStartTour && (
+        <button 
+          onClick={onStartTour}
+          className="bg-amber-600/80 backdrop-blur-md rounded-full 
+                    flex items-center gap-2 shadow-lg text-white
+                    border border-amber-500/40 transition-all hover:bg-amber-500/90
+                    px-3 py-2 md:px-4 md:py-2.5"
+        >
+          <Map size={16} className="md:w-[18px] md:h-[18px]" />
+          <span className="text-sm md:text-base font-medium">Ir al mapa</span>
+          <ChevronRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
+        </button>
+      )}
       
       {/* Botón principal de capas */}
       <button 

@@ -149,13 +149,13 @@ const RadialMenu: React.FC<RadialMenuProps> = ({
       className={`
         ${isDemoMode 
           ? 'fixed inset-0 flex items-center justify-center z-50 demo-radial-menu' 
-          : 'w-full h-full flex items-center justify-center'} 
+          : 'w-full h-full flex items-end justify-end radial-menu-non-demo'} 
         transition-opacity duration-300 ease-in-out
         ${isVisible ? 'opacity-100' : 'opacity-0'}
       `}
     >
       <motion.div 
-        className={`relative ${isDemoMode ? 'transform scale-110' : 'transform scale-0.8'}`}
+        className={`relative ${isDemoMode ? 'transform scale-110' : 'transform scale-1.2'}`}
         initial="hidden"
         animate="visible"
         variants={containerVariants}

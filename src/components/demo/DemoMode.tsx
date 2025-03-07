@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, RotateCcw, Info, MapPin, Layers } from 'lucide-react';
 import RadialMenu from '../RadialMenu';
+import StepByStepGuide from './StepByStepGuide';
 import { DemoStateManager } from '../../utils/demoState';
 import { loadRegionsGeoJSON, highlightRegion, getRegionNameForGeoJSON } from '../../utils/regionLoader';
 import { colombiaRegions, type MacroRegion } from '../../data/regions';
@@ -25,6 +26,7 @@ const DemoMode: React.FC<DemoModeProps> = ({
   const [showResetButton, setShowResetButton] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedMacro, setSelectedMacro] = useState<MacroRegion | null>(null);
+  const [showRadialGuide, setShowRadialGuide] = useState(true); // Mostrar la guía del menú radial por defecto
 
   // Efecto para el zoom inicial al país y cargar regiones
   useEffect(() => {
@@ -128,9 +130,57 @@ const DemoMode: React.FC<DemoModeProps> = ({
 
   // Esta función se llama cuando se hace clic en "Ir al mapa"
   const handleSkipDemo = () => {
-    console.log("Ir al mapa: Completando el demo y pasando a la vista principal");
-    DemoStateManager.markDemoAsComplete(); // Marca el demo como completado en localStorage
-    onDemoComplete(); // Llama a la función del componente padre para cambiar el estado
+    try {
+      console.log("Ir al mapa: Completando el demo y pasando a la vista principal");
+      
+      // Marca el demo como completado en localStorage
+      DemoStateManager.markDemoAsComplete(); 
+      
+      // IMPORTANTE: Añadir un mensaje visual para que el usuario sepa que se está procesando su acción
+      const overlay = document.createElement('div');
+      overlay.id = 'demo-skip-overlay';
+      overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0,0,0,0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.3s ease;
+      `;
+      
+      const message = document.createElement('div');
+      message.style.cssText = `
+        background-color: rgba(0,0,0,0.8);
+        color: white;
+        padding: 20px 40px;
+        border-radius: 8px;
+        font-size: 18px;
+        border: 1px solid rgba(255,255,255,0.2);
+        backdrop-filter: blur(5px);
+      `;
+      message.textContent = 'Cargando mapa...';
+      
+      overlay.appendChild(message);
+      document.body.appendChild(overlay);
+      
+      // Pequeño retraso para asegurar que el overlay se muestre antes de la transición
+      setTimeout(() => {
+        // DEBUG: Log antes de llamar a onDemoComplete
+        console.log("Por llamar a onDemoComplete:", onDemoComplete);
+        
+        // MUESTRA DIRECTA SIN VERIFICACIONES
+        onDemoComplete();
+        console.log("onDemoComplete fue llamado");
+      }, 300);
+    } catch (error) {
+      console.error("ERROR en handleSkipDemo:", error);
+      alert("Error al intentar ir al mapa. Por favor, intenta de nuevo.");
+    }
   };
 
   const handleResetDemo = () => {
@@ -159,6 +209,16 @@ const DemoMode: React.FC<DemoModeProps> = ({
     <div className="fixed inset-0 z-50">
       {/* Fondo oscuro con blur */}
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+      
+      {/* Título principal */}
+      <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-10">
+        <div className="bg-black/60 backdrop-blur-md rounded-lg px-6 py-4 flex flex-col items-center gap-3 border border-white/10">
+          <h1 className="text-white text-2xl font-bold">Mapa de la Memoria Histórica</h1>
+          <p className="text-white/80 text-center max-w-md">
+            Utiliza el menú radial para explorar las macroregiones, departamentos y tipos de lugares de memoria histórica de Colombia.
+          </p>
+        </div>
+      </div>
 
       {/* Contenedor principal centrado */}
       <div className="relative w-full h-full flex flex-col items-center justify-center">
@@ -195,11 +255,19 @@ const DemoMode: React.FC<DemoModeProps> = ({
             highlightSection={currentSection}
             selectedMacro={selectedMacro}
           />
+          
+          {/* Guía paso a paso potente a la derecha del menú radial */}
+          <StepByStepGuide
+            currentSection={currentSection}
+            selectedMacro={selectedMacro}
+            currentStep={currentStep}
+            onSkipDemo={handleSkipDemo}
+          />
         </div>
 
         {/* Controles inferiores */}
-        <div className="absolute bottom-12 w-full px-8 flex justify-between items-center">
-          {/* Indicadores de progreso centrados en la parte inferior */}
+        <div className="absolute bottom-20 w-full flex flex-col items-center gap-8">
+          {/* Indicadores de progreso centrados */}
           <div className="flex gap-2">
             <div className={`w-16 h-2 rounded-full transition-all ${currentStep === 0 ? 'bg-white' : 'bg-white/20'}`} />
             <div className={`w-8 h-2 rounded-full transition-all ${currentStep === 1 ? 'bg-white' : 'bg-white/20'}`} />
@@ -207,19 +275,21 @@ const DemoMode: React.FC<DemoModeProps> = ({
             <div className={`w-8 h-2 rounded-full transition-all ${currentStep === 3 ? 'bg-white' : 'bg-white/20'}`} />
           </div>
           
-          {/* Botón de Ir al mapa en esquina inferior derecha */}
-          <button
-            onClick={() => {
-              console.log("Botón Ir al mapa presionado");
-              handleSkipDemo();
-            }}
-            className="px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 
-              backdrop-blur-sm flex items-center gap-3 group transition-all duration-300
-              border border-white/20 shadow-lg"
-          >
-            <span className="text-white font-medium">Ir al mapa</span>
-            <ChevronRight className="w-5 h-5 text-white group-hover:translate-x-1 transition-transform" />
-          </button>
+          {/* Botón de Ir al mapa GRANDE y CENTRADO */}
+          <div className="flex justify-center">
+            <button
+              onClick={() => {
+                console.log("Botón Ir al mapa presionado");
+                handleSkipDemo();
+              }}
+              className="px-10 py-5 rounded-full bg-amber-500 hover:bg-amber-600 
+                backdrop-blur-sm flex items-center gap-4 group transition-all duration-300
+                border-2 border-amber-400/50 shadow-xl animate-pulse"
+            >
+              <span className="text-white font-bold text-xl">IR AL MAPA</span>
+              <ChevronRight className="w-8 h-8 text-white group-hover:translate-x-1 transition-transform" />
+            </button>
+          </div>
         </div>
 
         {/* Eliminamos el botón de la esquina superior derecha */}

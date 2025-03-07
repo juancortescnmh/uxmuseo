@@ -136,6 +136,14 @@ export const DemoStateManager = {
     const state = DemoStateManager.getInitialState();
     return !state.hasSeenDemo || !state.isDemoComplete;
   },
+  
+  /**
+   * Verifica si el demo está en progreso
+   */
+  isDemoInProgress: (): boolean => {
+    const state = DemoStateManager.getInitialState();
+    return state.hasSeenDemo && !state.isDemoComplete;
+  },
 
   /**
    * Obtiene el progreso actual del demo

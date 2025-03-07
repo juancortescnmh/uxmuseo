@@ -1,6 +1,6 @@
 // src/components/TourMessage.tsx
 import React, { useState, useEffect } from 'react';
-import { X, ChevronRight, MapPin, ArrowRight } from 'lucide-react';
+import { X, ChevronRight, MapPin, ArrowRight, Info } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface TourMessageProps {
@@ -67,11 +67,15 @@ export const TourMessage: React.FC<TourMessageProps> = ({
               
               {/* Footer con botón de siguiente */}
               <div className="tour-message-footer">
-                {skipFunction && title === "Mapa de la Memoria Histórica" && (
+                {skipFunction && (
                   <button 
                     className="px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 
-                      backdrop-blur-sm flex items-center gap-3 group transition-all duration-300 mr-3"
-                    onClick={skipFunction}
+                      backdrop-blur-sm flex items-center gap-3 group transition-all duration-300 mr-3
+                      cursor-pointer"
+                    onClick={() => {
+                      console.log("Botón 'Ir al mapa' presionado desde TourMessage");
+                      skipFunction();
+                    }}
                   >
                     <span className="text-white">Ir al mapa</span>
                     <ChevronRight className="w-5 h-5 text-white group-hover:translate-x-1 transition-transform" />

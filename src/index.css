@@ -21,10 +21,25 @@ body {
 
 /* Estilo específico para menú radial */
 #menu-radial-container {
-  transform: translate(40%, 40%) scale(0.75);
+  transform: translate(0%, 0%) scale(1);
   transform-origin: bottom right;
-  pointer-events: all;
+  pointer-events: all !important; 
   touch-action: auto;
+  right: 0;
+  bottom: 0;
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: flex-end !important;
+  width: 400px !important;
+  height: 400px !important;
+}
+
+.radial-menu-non-demo {
+  position: absolute !important;
+  bottom: 0 !important;
+  right: 0 !important;
+  width: 400px !important;
+  height: 400px !important;
 }
 
 .marker-content {

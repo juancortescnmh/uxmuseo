@@ -1218,33 +1218,7 @@ export function startGuidedTour(
         zoom: 6.2,
         pitch: 45,
         bearing: 0,
-        duration: 7000,
-        skipFunction: () => {
-          // Limpiar todos los elementos del tour y salir del modo demo
-          hideAreaOfInterest(mapRef, mapLoadedRef);
-          
-          // Limpiar todos los marcadores del tour
-          tourMarkers.forEach(marker => marker.remove());
-          
-          // Eliminar cualquier popup o mensaje que esté visible
-          const tourMessages = document.querySelectorAll('.tour-message-wrapper');
-          tourMessages.forEach(el => el.remove());
-          
-          // Cambiar el estado para volver al modo principal de la aplicación
-          setAppState((prev: any) => ({ ...prev, stage: 'app' }));
-          
-          // Volver a una vista general del mapa
-          map.flyTo({
-            center: [-73.5, 4.8],
-            zoom: 6,
-            pitch: 30,
-            bearing: 0,
-            duration: 2000
-          });
-          
-          // Llamar a la función que completa el demo
-          if (onDemoComplete) onDemoComplete();
-        }
+        duration: 7000
       },
       {
         title: "Navegación por Regiones",
@@ -1392,12 +1366,57 @@ export function startGuidedTour(
           tourMessageElement.className = 'tour-message-wrapper';
           document.body.appendChild(tourMessageElement);
 
+          // Crear una función de salto para todos los pasos del tour
+          const universalSkipFunction = () => {
+            console.log("Saltando el tour y yendo directamente al mapa principal");
+            
+            // Limpiar todos los elementos del tour
+            hideAreaOfInterest(mapRef, mapLoadedRef);
+            
+            // Limpiar todos los marcadores del tour
+            tourMarkers.forEach(marker => marker.remove());
+            
+            // Eliminar cualquier popup o mensaje que esté visible
+            const tourMessages = document.querySelectorAll('.tour-message-wrapper');
+            tourMessages.forEach(el => el.remove());
+            
+            // Cambiar el estado para volver al modo principal de la aplicación
+            setAppState((prev: any) => ({ ...prev, stage: 'app' }));
+            
+            // Volver a una vista general del mapa
+            map.flyTo({
+              center: [-73.5, 4.8],
+              zoom: 6,
+              pitch: 30,
+              bearing: 0,
+              duration: 2000
+            });
+            
+            // Llamar a la función que completa el demo si está disponible
+            if (onDemoComplete) onDemoComplete();
+            
+            // Asegurar que el menú radial sea visible
+            setTimeout(() => {
+              const menuContainer = document.getElementById('menu-radial-container');
+              if (menuContainer) {
+                menuContainer.style.display = 'flex';
+                menuContainer.style.opacity = '1';
+                menuContainer.style.visibility = 'visible';
+                menuContainer.style.pointerEvents = 'auto';
+              }
+            }, 500);
+            
+            // Resolver la promesa para que continue el flujo
+            resolve();
+          };
+          
           renderTourMessage({
             title: step.title,
             message: step.message,
             location: step.location,
             isLastStep: step.isLastStep || i === tourSequence.length - 1,
-            skipFunction: step.skipFunction,
+            // Usar la función de skipFunction universal, no solo la del paso específico
+            skipFunction: universalSkipFunction,
             onNext: () => {
               tourMessageElement.remove();
               resolve();
@@ -1428,6 +1447,17 @@ export function startGuidedTour(
       
       setTimeout(() => {
         setAppState((prev: any) => ({ ...prev, stage: 'app' }));
+        
+        // Asegurar que el menú radial sea visible
+        setTimeout(() => {
+          const menuContainer = document.getElementById('menu-radial-container');
+          if (menuContainer) {
+            menuContainer.style.display = 'flex';
+            menuContainer.style.opacity = '1';
+            menuContainer.style.visibility = 'visible';
+            menuContainer.style.pointerEvents = 'auto';
+          }
+        }, 500);
       }, 3000);
       
     })().catch(error => {

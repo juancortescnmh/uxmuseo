@@ -5,6 +5,8 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { AnimatePresence } from 'framer-motion';
 import { Info, ChevronRight } from 'lucide-react';
+import RadialMenuGuide from './components/RadialMenuGuide';
+import { TutorialStateManager } from './utils/tutorialState';
 
 // Componentes
 import RadialMenu from './components/RadialMenu';
@@ -109,7 +111,14 @@ export default function App() {
   // Estados para la carga del mapa
   const [mapProgress, setMapProgress] = useState(0);
   const [isMapFullyLoaded, setIsMapFullyLoaded] = useState(false);
-
+  
+  // Estado para el tutorial del menú radial
+  const [showTutorial, setShowTutorial] = useState(false);
+  
+  // Estado para la guía del menú radial
+  const [showRadialGuide, setShowRadialGuide] = useState(false);
+  const [highlightSection, setHighlightSection] = useState<'center' | 'macro' | 'department' | 'memory'>('center');
+  
   // Estado para mantener la ubicación actual para el componente de contexto
   const [currentLocation, setCurrentLocation] = useState<{
     region?: string;
@@ -241,6 +250,24 @@ export default function App() {
     handleMarkerClick(location);
     setSearchQuery(location.title);
     setShowSuggestions(false);
+  };
+  
+  /**
+   * Manejar cierre del tutorial
+   */
+  const handleCloseTutorial = () => {
+    setShowTutorial(false);
+    setShowRadialGuide(false);
+    TutorialStateManager.dismissTutorial();
+  };
+  
+  /**
+   * Manejar finalización del tutorial
+   */
+  const handleCompleteTutorial = () => {
+    setShowTutorial(false);
+    setShowRadialGuide(false);
+    TutorialStateManager.markTutorialAsCompleted();
   };
 
   /**
@@ -391,6 +418,25 @@ export default function App() {
     
     setCurrentLocation(newLocation);
   }, [appState.selectedMacroRegion, appState.selectedDepartment, appState.selectedLocation]);
+  
+  // Efecto para mostrar el tutorial en el momento adecuado
+  useEffect(() => {
+    // Mostrar el tutorial solo cuando:
+    // 1. El mapa está completamente cargado
+    // 2. Estamos en la vista principal (app)
+    // 3. No estamos en modo tour
+    // 4. El tutorial debe mostrarse según las reglas del TutorialStateManager
+    if (isMapFullyLoaded && appState.stage === 'app') {
+      // Pequeño retraso para asegurar que todo esté renderizado
+      const timer = setTimeout(() => {
+        if (TutorialStateManager.shouldShowTutorial()) {
+          setShowTutorial(true);
+        }
+      }, 1500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isMapFullyLoaded, appState.stage]);
 
   // Preloader -> Demo
   const handlePreloaderComplete = () => {
@@ -399,9 +445,51 @@ export default function App() {
 
   // Demo -> App
   const handleDemoComplete = () => {
-    DemoStateManager.markDemoAsComplete();
-    setAppState(prev => ({ ...prev, stage: 'app' }));
-    // Si deseas rotar luego, setDroneActive(true);
+    try {
+      console.log("Completando modo demo y mostrando app principal con menú radial");
+      
+      // Marcar demo como completado y cambiar el estado a 'app'
+      DemoStateManager.markDemoAsComplete();
+      setAppState(prev => ({ ...prev, stage: 'app' }));
+      
+      // Asegurar que el mapa está en modo app y listo para interactuar
+      if (mapRef.current) {
+        mapRef.current.flyTo({
+          center: [-73.5, 4.8],
+          zoom: 6,
+          pitch: 30,
+          bearing: 0,
+          duration: 2000
+        });
+      }
+      
+      // Quitar cualquier overlay de carga que pudiera haberse añadido
+      const overlay = document.getElementById('demo-skip-overlay');
+      if (overlay) {
+        overlay.remove();
+      }
+      
+      // Asegurar que el menú radial sea visible (importante)
+      setTimeout(() => {
+        const menuContainer = document.getElementById('menu-radial-container');
+        if (menuContainer) {
+          console.log("Forzando visibilidad del menú radial");
+          menuContainer.style.display = 'flex';
+          menuContainer.style.opacity = '1';
+          menuContainer.style.visibility = 'visible';
+          menuContainer.style.pointerEvents = 'auto';
+          
+          // Mostrar la guía del menú radial
+          setShowRadialGuide(true);
+        } else {
+          console.error("No se pudo encontrar el contenedor del menú radial");
+        }
+      }, 1000);
+    } catch (error) {
+      console.error("ERROR EN handleDemoComplete:", error);
+      // En caso de error, forzar el cambio a modo app
+      setAppState(prev => ({ ...prev, stage: 'app' }));
+    }
   };
 
   // Manejar radial select
@@ -598,7 +686,10 @@ export default function App() {
 
       {appState.stage === 'demo' && (
         <DemoMode 
-          onDemoComplete={handleDemoComplete}
+          onDemoComplete={() => {
+            console.log("DemoMode solicitó completar demo - llamando a handleDemoComplete");
+            handleDemoComplete();
+          }}
           onStartTour={startTour}
           mapRef={mapRef}
           mapLoadedRef={mapLoadedRef}
@@ -635,13 +726,14 @@ export default function App() {
             onZoomIn={handleZoomIn}
             onZoomOut={handleZoomOut}
             onResetRotation={handleResetRotation}
+            onStartTour={startTour}
           />
 
           {/* POSICIONADO EXACTAMENTE EN LA ESQUINA INFERIOR DERECHA */}
           {appState.stage !== 'tour' && (
             <>
-              {/* MENÚ RADIAL ABSOLUTAMENTE FIJADO */}
-              <div id="menu-radial-container" className="fixed bottom-0 right-0 w-[300px] h-[300px] z-[9999]">
+              {/* MENÚ RADIAL ABSOLUTAMENTE FIJADO EN LA ESQUINA INFERIOR DERECHA */}
+              <div id="menu-radial-container" className="fixed bottom-0 right-0 w-[400px] h-[400px] z-[9999] pointer-events-auto">
                 <RadialMenu
                   onSelect={handleRadialSelect}
                   onStartTour={startTour}
@@ -661,20 +753,19 @@ export default function App() {
                   }}
                   isDemoMode={false}
                   selectedMacro={appState.selectedMacroRegion}
+                  highlightSection={highlightSection}
                 />
               </div>
               
-              {/* Botón "Ir al mapa" en la esquina inferior derecha */}
-              <div className="fixed bottom-4 right-4 z-[10000]">
-                <button
-                  onClick={() => startTour()}
-                  className="px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 
-                    backdrop-blur-sm flex items-center gap-3 group transition-all duration-300 border border-white/20"
-                >
-                  <span className="text-white">Ir al mapa</span>
-                  <ChevronRight className="w-5 h-5 text-white group-hover:translate-x-1 transition-transform" />
-                </button>
-              </div>
+              {/* Guía interactiva del menú radial */}
+              <RadialMenuGuide 
+                isOpen={showRadialGuide}
+                onClose={() => setShowRadialGuide(false)}
+                onComplete={() => setShowRadialGuide(false)}
+                isDemoMode={false}
+                setHighlightSection={setHighlightSection}
+              />
+              
               
               {/* LocationContext en el centro inferior */}
               {Object.keys(currentLocation).length > 0 && (
