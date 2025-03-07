@@ -641,26 +641,12 @@ export default function App() {
           {appState.stage !== 'tour' && (
             <>
               {/* MENÚ RADIAL ABSOLUTAMENTE FIJADO */}
-              <div 
-                style={{
-                  position: 'fixed',
-                  bottom: '0',
-                  right: '0',
-                  width: '200px',
-                  height: '200px',
-                  zIndex: 9999,
-                  transform: 'translate(30%, 30%) scale(0.65)',
-                  background: 'transparent' 
-                }}
-              >
+              <div id="menu-radial-container" className="fixed bottom-0 right-0 w-[300px] h-[300px] z-[9999]">
                 <RadialMenu
                   onSelect={handleRadialSelect}
-                  onStartTour={() => {
-                    alert("Iniciando tour");
-                    startTour();
-                  }}
+                  onStartTour={startTour}
                   onResetView={() => {
-                    alert("Reseteando mapa");
+                    console.log("Reseteando mapa"); 
                     resetMap(
                       mapRef,
                       mapContainerRef,
@@ -676,6 +662,18 @@ export default function App() {
                   isDemoMode={false}
                   selectedMacro={appState.selectedMacroRegion}
                 />
+              </div>
+              
+              {/* Botón "Ir al mapa" en la esquina inferior derecha */}
+              <div className="fixed bottom-4 right-4 z-[10000]">
+                <button
+                  onClick={() => startTour()}
+                  className="px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 
+                    backdrop-blur-sm flex items-center gap-3 group transition-all duration-300 border border-white/20"
+                >
+                  <span className="text-white">Ir al mapa</span>
+                  <ChevronRight className="w-5 h-5 text-white group-hover:translate-x-1 transition-transform" />
+                </button>
               </div>
               
               {/* LocationContext en el centro inferior */}

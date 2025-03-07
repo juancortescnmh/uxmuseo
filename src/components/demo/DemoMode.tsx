@@ -209,11 +209,15 @@ const DemoMode: React.FC<DemoModeProps> = ({
           
           {/* Botón de Ir al mapa en esquina inferior derecha */}
           <button
-            onClick={handleSkipDemo}
+            onClick={() => {
+              console.log("Botón Ir al mapa presionado");
+              handleSkipDemo();
+            }}
             className="px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 
-              backdrop-blur-sm flex items-center gap-3 group transition-all duration-300"
+              backdrop-blur-sm flex items-center gap-3 group transition-all duration-300
+              border border-white/20 shadow-lg"
           >
-            <span className="text-white">Ir al mapa</span>
+            <span className="text-white font-medium">Ir al mapa</span>
             <ChevronRight className="w-5 h-5 text-white group-hover:translate-x-1 transition-transform" />
           </button>
         </div>

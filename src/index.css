@@ -19,6 +19,14 @@ body {
   -webkit-overflow-scrolling: touch; /* Permite scroll suave en iOS */
 }
 
+/* Estilo específico para menú radial */
+#menu-radial-container {
+  transform: translate(40%, 40%) scale(0.75);
+  transform-origin: bottom right;
+  pointer-events: all;
+  touch-action: auto;
+}
+
 .marker-content {
   display: flex;
   align-items: center;
