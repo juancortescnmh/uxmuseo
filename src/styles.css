@@ -1,0 +1,1685 @@
+/* Estilos adicionales para el mapa y los elementos 3D */
+
+/* Estilos para el contenedor del mapa */
+.map-container {
+position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+/* Estilo para los marcadores de lugares de memoria */
+.memory-location-marker {
+cursor: pointer;
+}
+
+.memory-marker {
+position: relative;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.marker-dot {
+width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.marker-inner {
+width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: white;
+}
+
+.marker-label {
+position: absolute;
+  left: 110%;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
+  white-space: nowrap;
+}
+
+.memory-marker.selected .marker-dot {
+transform: scale(1.2);
+  border-color: #ffcc00;
+  box-shadow: 0 0 15px rgba(255, 204, 0, 0.5);
+}
+
+.memory-marker.selected .marker-inner {
+background-color: #ffcc00;
+}
+
+/* Estilos para popups */
+.popup-content {
+background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: white;
+  text-align: left;
+  max-width: 280px;
+}
+
+.popup-content h3 {
+font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: white;
+}
+
+.popup-content p {
+font-size: 13px;
+  opacity: 0.9;
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+
+.popup-content .location-region,
+.popup-content .location-department {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+}
+
+.popup-content .location-region::before,
+.popup-content .location-department::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.popup-content .location-region::before {
+  background-color: #4CAF50;
+}
+
+.popup-content .location-department::before {
+  background-color: #2196F3;
+}
+
+.mapboxgl-popup-content {
+background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
+.mapboxgl-popup-tip {
+display: none;
+}
+
+/* Estilos para los tooltips del tour */
+.tour-popup {
+background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  padding: 16px;
+  color: white;
+  font-size: 16px;
+  text-align: center;
+  max-width: 300px;
+  line-height: 1.5;
+}
+
+/* Estilo para el panel de información de ubicación */
+.location-info-container {
+position: absolute;
+  top: 30%;
+  left: 80px;
+  z-index: 50;
+  max-width: 400px;
+  pointer-events: auto;
+}
+
+.location-info-panel {
+background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: white;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 80vh;
+}
+
+.location-info-header {
+padding: 20px 24px;
+  position: relative;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.location-icon {
+margin-right: 12px;
+}
+
+.location-title {
+font-size: 22px;
+  font-weight: 500;
+  margin: 0 0 4px 0;
+  padding-right: 28px; /* Espacio para el botón de cerrar */
+}
+
+.location-close-btn {
+position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 2;
+}
+
+.location-close-btn:hover {
+background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.location-info-content {
+padding: 0 20px 20px;
+}
+
+.location-description {
+font-size: 15px;
+  line-height: 1.6;
+  margin: 0 0 16px 0;
+  opacity: 0.9;
+  font-weight: 300;
+}
+
+.location-info-footer {
+padding: 16px 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Estilos para los mensajes de tour */
+.tour-message-container {
+position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  pointer-events: none;
+}
+
+.tour-message {
+background: rgba(0,0,0,0.7);
+  color: white;
+  padding: 20px 30px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 18px;
+  line-height: 1.5;
+  box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+  max-width: 500px;
+}
+
+/* Botones laterales con estilo de cristal */
+.glass-button {
+width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  transition: all 0.3s;
+}
+
+.glass-button:hover {
+background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Barra de navegación superior */
+.top-nav {
+position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(50, 50, 50, 0.4);
+  backdrop-filter: blur(4px);
+  padding: 8px 16px;
+  color: white;
+  z-index: 100;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Personalización de controles de Mapbox */
+.mapboxgl-ctrl-logo {
+opacity: 0.7;
+}
+
+.mapboxgl-ctrl-attrib {
+font-size: 10px;
+  background: rgba(0, 0, 0, 0.5) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+  padding: 2px 5px !important;
+}
+
+.mapboxgl-ctrl-attrib a {
+color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.restart-map-btn:hover {
+background-color: rgba(206, 61, 61, 0.9);
+}
+
+/* Agregar estos estilos a styles.css */
+
+.tour-message-container {
+position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  max-width: 80%;
+  width: 450px;
+  pointer-events: auto;
+}
+
+.tour-message-box {
+background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  color: white;
+  display: flex;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.tour-message-icon {
+width: 60px;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tour-message-location {
+font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 400;
+}
+
+.tour-message-title {
+font-size: 24px;
+  font-weight: 300;
+  margin: 0;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.tour-message-text {
+font-size: 15px;
+  line-height: 1.7;
+  opacity: 0.9;
+  margin: 0;
+  font-weight: 300;
+}
+
+.tour-message-close {
+position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+.tour-message-close:hover {
+background: rgba(255, 255, 255, 0.1);
+  color: white;
+  transform: rotate(90deg);
+}
+
+/* Agregar a src/styles.css */
+
+/* Estilo para los marcadores de lugares de memoria */
+.memory-location-marker {
+position: relative;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transform-origin: center;
+  transition: transform 0.3s ease;
+}
+
+.memory-location-marker.selected {
+transform: scale(1.2);
+}
+
+.memory-marker-circle {
+position: absolute;
+  top: 0;
+  left: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.memory-location-marker.selected .memory-marker-circle {
+transform: scale(1.2);
+  border-color: #FFCC00;
+  box-shadow: 0 0 15px rgba(255, 204, 0, 0.5);
+}
+
+.memory-marker-icon {
+color: white;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.memory-marker-label {
+position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.4);
+  color: white;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 9px;
+  white-space: nowrap;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
+  opacity: 0.75;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+/* Estilos mejorados para los mensajes de tour - Agregar a styles.css */
+.tour-message-container {
+position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  max-width: 80%;
+  width: 500px;
+  pointer-events: auto;
+}
+
+.tour-message-content {
+flex: 1;
+  padding: 28px 32px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.tour-message-divider {
+height: 1px;
+  background: linear-gradient(to right, rgba(255,255,255,0.05), rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+  margin: 20px 0;
+}
+
+.tour-message-footer {
+display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.tour-message-next-btn {
+display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}
+
+.tour-message-next-btn:hover {
+background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+/* Estilos mejorados para LocationInfo, inspirados en la imagen 2 */
+.location-info-container {
+position: absolute;
+  top: 40px;
+  left: 40px;
+  max-width: 450px;
+  width: 90%;
+  max-height: 85vh;
+  z-index: 50;
+  pointer-events: auto;
+}
+
+.location-subtitle {
+font-size: 14px;
+  opacity: 0.7;
+  margin: 0;
+}
+
+.location-info-body {
+padding: 20px 24px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.location-tabs {
+display: flex;
+  margin: 24px 0 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.location-tab {
+flex: 1;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  padding: 12px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+  border-bottom: 2px solid transparent;
+}
+
+.location-tab:hover {
+color: white;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.location-tab.active {
+color: white;
+  border-bottom: 2px solid white;
+}
+
+.location-tab span {
+display: none;
+}
+
+@media (min-width: 768px) {
+.location-tab span {
+    display: inline;
+}
+
+}
+
+.location-tab-content {
+padding: 16px 0;
+  min-height: 180px;
+}
+
+.location-tab-content h3 {
+font-size: 16px;
+  font-weight: 500;
+  margin: 0 0 16px 0;
+}
+
+.location-docs-list {
+list-style: none;
+  padding: 0;
+  margin: 16px 0 0 0;
+}
+
+.location-docs-list li {
+display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  margin-bottom: 8px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.location-docs-list li:hover {
+background: rgba(255, 255, 255, 0.1);
+}
+
+.location-doc-name {
+font-size: 14px;
+}
+
+.location-doc-button {
+background: none;
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.location-doc-button:hover {
+background: rgba(255, 255, 255, 0.1);
+}
+
+.location-metadata {
+display: flex;
+  gap: 20px;
+}
+
+.location-metadata-item {
+display: flex;
+  flex-direction: column;
+}
+
+.location-metadata-label {
+font-size: 12px;
+  opacity: 0.6;
+  margin-bottom: 4px;
+}
+
+.location-metadata-value {
+font-size: 14px;
+}
+
+/* Mejorar los estilos de los marcadores */
+.memory-location-marker {
+position: relative;
+}
+
+.memory-location-marker:hover .memory-marker-circle {
+transform: scale(1.1);
+  border-color: white;
+}
+
+.memory-location-marker:hover .memory-marker-label,
+.memory-location-marker.selected .memory-marker-label {
+opacity: 1;
+}
+
+/* Marcadores mejorados con efecto de transparencia */
+.memory-location-marker {
+position: relative;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transform-origin: center;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.memory-marker-outer-ring {
+position: absolute;
+  width: 48px;
+  height: 48px;
+  top: -4px;
+  left: -4px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.memory-location-marker:hover .memory-marker-outer-ring,
+.memory-location-marker.selected .memory-marker-outer-ring {
+opacity: 1;
+}
+
+.memory-marker-inner-circle {
+width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.memory-location-marker:hover .memory-marker-label {
+opacity: 1;
+}
+
+/* Estilos mejorados para los mensajes de tour */
+.tour-message-container {
+position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  max-width: 80%;
+  width: 500px;
+  pointer-events: auto;
+}
+
+/* Ajustes para que los iconos SVG se muestren correctamente */
+.memory-marker-icon {
+color: white;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.95;
+}
+
+.memory-marker-icon svg {
+width: 14px;
+  height: 14px;
+  stroke: currentColor;
+}
+
+/* Hacer que los marcadores sean más sutiles */
+.memory-marker-inner-circle {
+width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+/* Estilos premium para los mensajes de tour - Añadir a styles.css */
+.tour-message-container {
+position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  max-width: 85%;
+  width: 580px;
+  pointer-events: auto;
+}
+
+/* Efecto de gradiente en el fondo */
+.tour-message-box::before {
+content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.08), transparent);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Barra lateral con gradiente */
+.tour-message-sidebar {
+width: 70px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.2));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 25px;
+  position: relative;
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.tour-message-icon-container {
+width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.tour-message-vertical-line {
+width: 1px;
+  height: 100px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15), transparent);
+}
+
+.tour-message-header {
+margin-bottom: 16px;
+}
+
+.tour-message-body {
+flex: 1;
+  font-size: 15px;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 20px;
+}
+
+.tour-message-next-icon {
+width: 16px;
+  height: 16px;
+  transition: transform 0.3s ease;
+}
+
+.tour-message-next-btn:hover .tour-message-next-icon {
+transform: translateX(3px);
+}
+
+/* Elemento decorativo flotante */
+.tour-message-floating-shape {
+position: absolute;
+  bottom: -70px;
+  right: -50px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.5;
+}
+
+/* Añade un pequeño borde inferior a la caja */
+.tour-message-box::after {
+content: '';
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.15), transparent);
+}
+
+/* Estilos para los paneles laterales */
+.sidebar-panel {
+width: 340px;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-panel-header {
+display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-panel-header h2 {
+margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.close-btn {
+background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-btn:hover {
+opacity: 1;
+}
+
+.sidebar-panel-content {
+padding: 16px 20px;
+  overflow-y: auto;
+  flex: 1;
+  max-height: calc(80vh - 60px);
+}
+
+/* Estilos para el panel de menú */
+.menu-items {
+display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.menu-item {
+padding: 12px 16px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 16px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.menu-item:hover {
+background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Estilos para la sección de información */
+.side-panel-section {
+margin-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 16px;
+}
+
+.side-panel-section h3 {
+margin: 0 0 10px 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.side-panel-section p {
+color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+/* Estilos para filtros y selectores */
+.filter-section {
+margin-bottom: 20px;
+}
+
+.filter-section h3 {
+margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.select-filter {
+width: 100%;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: white;
+  font-size: 14px;
+}
+
+.select-filter:focus {
+outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Estilos para leyenda */
+.locations-legend {
+margin-top: 20px;
+}
+
+.legend-item {
+display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.legend-color {
+width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+/* Estilos para formularios */
+.login-form {
+display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.login-form input {
+padding: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: white;
+  font-size: 14px;
+}
+
+.login-form button,
+.register-section button,
+.tour-btn {
+background-color: rgba(255, 255, 255, 0.15);
+  border: none;
+  border-radius: 4px;
+  color: white;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.login-form button:hover,
+.register-section button:hover,
+.tour-btn:hover {
+background-color: rgba(255, 255, 255, 0.25);
+}
+
+.register-section {
+margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.register-section h3 {
+margin: 0 0 10px 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.register-section p {
+color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+/* Estilos para listas en paneles de información */
+.info-content ul {
+padding-left: 20px;
+  margin: 10px 0;
+}
+
+.info-content li {
+margin-bottom: 5px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.login-form button,
+.register-section button,
+.tour-btn,
+.logout-btn {
+background-color: rgba(255, 255, 255, 0.15);
+  border: none;
+  border-radius: 4px;
+  color: white;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.login-form button:hover,
+.register-section button:hover,
+.tour-btn:hover,
+.logout-btn:hover {
+background-color: rgba(255, 255, 255, 0.25);
+}
+
+.logout-btn {
+background-color: rgba(255, 70, 70, 0.3);
+  width: 100%;
+  margin-top: 20px;
+}
+
+.logout-btn:hover {
+background-color: rgba(255, 70, 70, 0.5);
+}
+
+/* Estilos para el perfil */
+.profile-content {
+display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.user-info {
+background-color: rgba(255, 255, 255, 0.05);
+  padding: 15px;
+  border-radius: 6px;
+}
+
+.user-info h3 {
+margin: 0 0 10px 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.user-info p {
+margin: 0;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.user-actions h3 {
+margin: 0 0 10px 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.saved-locations {
+margin-bottom: 15px;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* Estilos para el contenedor del menú radial */
+.radial-menu-container {
+transform: scale(0.8);
+  transform-origin: bottom right;
+  transition: all 0.5s ease-in-out;
+}
+
+/* Cuando está en modo demo, el menú es más grande y centrado */
+.demo-radial-menu {
+transform: scale(1.1);
+  transform-origin: center;
+}
+
+.search-container {
+flex-grow: 1;
+}
+
+.search-form {
+flex-grow: 1;
+  display: flex;
+  align-items: center;
+}
+
+.nav-buttons {
+display: flex;
+  margin-left: 10px;
+}
+
+.nav-button {
+background: transparent;
+  border: none;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #5f6368;
+  font-size: 12px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.nav-button:hover {
+color: #202124;
+}
+
+.nav-button span {
+margin-top: 4px;
+  font-size: 10px;
+}
+
+.user-profile-button {
+width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: none;
+  border: none;
+  padding: 0;
+  margin-left: 3px;
+  margin-right: 3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-circle {
+width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: background-color 0.2s;
+}
+
+.zoom-control {
+width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  background-color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5f6368;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.zoom-control:hover {
+background-color: #f1f3f4;
+}
+
+/* Estilos para el panel de capas */
+.layer-panel {
+position: absolute;
+  bottom: 75px;
+  left: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  padding: 12px;
+  z-index: 49;
+  width: 200px;
+}
+
+.layer-panel-title {
+font-size: 14px;
+  margin: 0 0 10px 0;
+  color: #202124;
+  font-weight: 500;
+}
+
+.layer-options {
+display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.layer-option {
+display: flex;
+  align-items: center;
+}
+
+.layer-label {
+display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #5f6368;
+}
+
+.layer-checkbox {
+appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  position: relative;
+  cursor: pointer;
+}
+
+.layer-name {
+color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+}
+
+/* Estilos para el breadcrumb */
+.breadcrumb {
+position: absolute;
+  top: 80px;
+  left: 20px;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.breadcrumb-item {
+opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.breadcrumb-item:hover {
+opacity: 1;
+}
+
+.breadcrumb-separator {
+color: rgba(255, 255, 255, 0.5);
+  margin: 0 8px;
+}
+
+.breadcrumb-link {
+color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+
+.breadcrumb-link:hover {
+color: white;
+  text-decoration: underline;
+}
+
+.breadcrumb-current {
+color: white;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+.nav-button span {
+    display: none;
+}
+
+.breadcrumb {
+font-size: 12px;
+}
+
+}
+/* Botón de Capas y panel de capas */
+.layers-control {
+position: absolute;
+  bottom: 20px;
+  left: 20px;
+  z-index: 50;
+}
+
+.layers-button {
+display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.layers-button:hover {
+background: rgba(0, 0, 0, 0.6);
+}
+
+.layers-panel {
+position: absolute;
+  bottom: 60px;
+  left: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 15px;
+  width: 230px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.layers-panel-title {
+color: white;
+  font-size: 15px;
+  margin: 0 0 12px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-weight: 500;
+}
+
+.layers-list {
+display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.layer-item {
+display: flex;
+  align-items: center;
+}
+
+.layer-checkbox-label {
+display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.layer-checkbox:checked {
+background: #4285F4;
+  border-color: #4285F4;
+}
+
+.layer-checkbox:checked::after {
+content: '';
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.layer-color {
+width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Enlace Home y navegación */
+.home-nav {
+position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  z-index: 50;
+}
+
+.home-link {
+color: #FFD54F;
+  font-size: 16px;
+  text-decoration: none;
+  font-weight: 500;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  transition: color 0.2s;
+}
+
+.home-link:hover {
+color: #FFECB3;
+}
+
+/* Barra de búsqueda elegante */
+.search-nav-container {
+position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 5px;
+  z-index: 50;
+  width: calc(100% - 40px);
+  max-width: 700px;
+}
+
+.search-input {
+width: 100%;
+  background: transparent;
+  border: none;
+  padding: 10px 16px;
+  color: white;
+  font-size: 15px;
+  outline: none;
+}
+
+.search-button {
+display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background-color: rgba(66, 133, 244, 0.8);
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.nav-icon-button {
+background: none;
+  border: none;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  opacity: 0.8;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  border-radius: 50%;
+}
+
+.nav-icon-button:hover {
+opacity: 1;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Mensaje de error */
+.map-error-message {
+position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(180, 59, 59, 0.8);
+  backdrop-filter: blur(8px);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  max-width: 400px;
+  text-align: center;
+  z-index: 9999;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Contenedor del menú radial mejorado */
+.radial-menu-container {
+position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 40;
+  transform: scale(0.8);
+  transform-origin: bottom right;
+}
+
+.search-nav-container {
+display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 5px;
+  width: 100%;
+}
+
+/* Estilos del breadcrumb */
+.location-breadcrumb {
+display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  padding: 6px 14px;
+  border-radius: 4px;
+  margin-left: 2px;
+}
+
+/* Estilos para el control de capas */
+.layers-control {
+position: absolute;
+  bottom: 20px;
+  left: 20px;
+  z-index: 50;
+}
+
+/* Estilos para la navegación superior izquierda y breadcrumb */
+.top-left-navigation {
+position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 700px;
+}
+
+.search-input::placeholder {
+color: rgba(255, 255, 255, 0.7);
+}
+
+.nav-icons {
+display: flex;
+  align-items: center;
+  margin: 0 8px;
+  gap: 8px;
+}
+
+.user-profile-button:hover .profile-circle {
+background-color: rgba(255, 255, 255, 0.25);
+}
+
+/* Controles de zoom */
+.zoom-controls {
+position: absolute;
+  bottom: 20px;
+  left: 200px;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.zoom-button {
+width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.zoom-button:hover {
+background: rgba(0, 0, 0, 0.7);
+}
+
+/* Contenedor del menú radial */
+.radial-menu-container {
+  position: relative;
+  z-index: 40;
+  transform: scale(0.8);
+  transform-origin: center;
+  pointer-events: auto; /* Asegurar que los eventos de click se detecten */
+  touch-action: manipulation; /* Mejorar la respuesta táctil */
+  cursor: pointer; /* Indicar que es interactivo */
+}
+
+/* Estilo personalizado para barras de desplazamiento */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Estilo para los marcadores de exilio con efecto de pulso */
+.exilio-pulse-marker {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  pointer-events: auto;
+}
+
+.exilio-pulse-marker .pulse {
+  width: 18px;
+  height: 18px;
+  background-color: rgba(236, 72, 153, 0.8); /* Color rosa del exilio */
+  border-radius: 50%;
+  position: relative;
+  box-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
+}
+
+.exilio-pulse-marker .pulse::before,
+.exilio-pulse-marker .pulse::after {
+  content: '';
+  display: block;
+  position: absolute;
+  border-radius: 50%;
+  border: 3px solid rgba(236, 72, 153, 0.9);
+  left: -9px;
+  right: -9px;
+  top: -9px;
+  bottom: -9px;
+  animation: pulse 1.5s linear infinite;
+  opacity: 0;
+}
+
+.exilio-pulse-marker .pulse::after {
+  animation-delay: 0.5s;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.1, 0.1);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.6, 1.6);
+    opacity: 0;
+  }
+}
