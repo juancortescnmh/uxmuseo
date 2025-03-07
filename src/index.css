@@ -70,6 +70,7 @@ body {
     position: fixed !important; /* Asegurar posición fija */
     bottom: 20px !important;
     right: 20px !important;
+    z-index: 9000 !important; /* Asegurar que esté por encima de otros elementos */
   }
   
   /* Optimización de elementos animados */

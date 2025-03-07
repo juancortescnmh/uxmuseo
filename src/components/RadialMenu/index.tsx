@@ -155,7 +155,7 @@ const RadialMenu: React.FC<RadialMenuProps> = ({
       className={`
         ${isDemoMode 
           ? 'fixed inset-0 flex items-center justify-center z-50 demo-radial-menu' 
-          : 'radial-menu-container motion-safe-transform'}
+          : 'motion-safe-transform'} 
         transition-opacity duration-300 ease-in-out
         ${isVisible ? 'opacity-100' : 'opacity-0'}
       `}

@@ -635,8 +635,14 @@ export default function App() {
           {/* RadialMenu - Siempre en la esquina inferior derecha */}
           {appState.stage !== 'tour' && (
             <>
-              {/* El menú radial con posición fija */}
-              <div className="radial-menu-container z-40">
+              <div 
+                style={{
+                  position: 'fixed',
+                  bottom: '20px',
+                  right: '20px',
+                  zIndex: 9000
+                }}
+              >
                 <RadialMenu
                   onSelect={handleRadialSelect}
                   onStartTour={startTour}
