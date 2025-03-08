@@ -67,6 +67,8 @@ const DemoMode: React.FC<DemoModeProps> = ({
   }, []);
 
   const handleMenuSelect = (type: 'macro' | 'department' | 'memory', id: string) => {
+    console.log(`Selección en menú radial - Tipo: ${type}, ID: ${id}`);
+    
     // Implementar lógica basada en el tipo y ID
     if (type === 'macro' && id !== 'center') {
       // Gestionar la selección de macroregiones
@@ -76,6 +78,7 @@ const DemoMode: React.FC<DemoModeProps> = ({
         
         // Si ya está seleccionada esta región, la deseleccionamos
         if (selectedMacro === id) {
+          console.log(`Deseleccionando región: ${id}`);
           setSelectedMacro(null);
           // Restablecer la vista del mapa al zoom general de Colombia
           mapRef.current.flyTo({
@@ -87,6 +90,7 @@ const DemoMode: React.FC<DemoModeProps> = ({
           });
         } else {
           // Seleccionar esta región
+          console.log(`Seleccionando región: ${id}`);
           setSelectedMacro(id as MacroRegion);
           
           // Navegar a la región en el mapa
@@ -104,7 +108,48 @@ const DemoMode: React.FC<DemoModeProps> = ({
       }
     } else if (id === 'center') {
       // Iniciar recorrido cuando se selecciona el centro
-      onStartTour();
+      console.log("====== SELECCIONADO CENTRO DEL MENÚ RADIAL - INICIANDO TOUR ======");
+      
+      // Mostrar mensaje visual antes de iniciar el tour
+      const preTourMessage = document.createElement('div');
+      preTourMessage.id = 'pre-tour-message';
+      preTourMessage.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(0,0,0,0.9);
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        font-size: 20px;
+        text-align: center;
+        z-index: 9999;
+        max-width: 80%;
+        border: 2px solid rgba(255,165,0,0.5);
+        box-shadow: 0 0 30px rgba(0,0,0,0.7);
+      `;
+      preTourMessage.innerHTML = `
+        <h2 style="margin-bottom: 15px; color: #ffb74d; font-size: 28px;">Lugares de Memoria</h2>
+        <p>Estás a punto de comenzar un recorrido guiado por los lugares más significativos de la memoria histórica de Colombia.</p>
+        <p style="margin-top: 15px;">Este viaje te permitirá conocer espacios dedicados a la verdad, la reparación y la no repetición.</p>
+        <p style="margin-top: 20px; color: #ffb74d;">Preparando recorrido...</p>
+      `;
+      document.body.appendChild(preTourMessage);
+      
+      // Mostrar el mensaje por 3 segundos antes de iniciar el tour
+      setTimeout(() => {
+        if (preTourMessage) {
+          preTourMessage.remove();
+        }
+        
+        console.log("Llamando a onStartTour()");
+        if (typeof onStartTour === 'function') {
+          onStartTour();
+        } else {
+          console.error("ERROR: onStartTour no es una función");
+        }
+      }, 3000);
     }
     
     // Avanzar al siguiente paso para fines de demostración
@@ -168,15 +213,36 @@ const DemoMode: React.FC<DemoModeProps> = ({
       overlay.appendChild(message);
       document.body.appendChild(overlay);
       
-      // Pequeño retraso para asegurar que el overlay se muestre antes de la transición
+      // Retraso para asegurar que el overlay se muestre antes de la transición
       setTimeout(() => {
-        // DEBUG: Log antes de llamar a onDemoComplete
-        console.log("Por llamar a onDemoComplete:", onDemoComplete);
-        
-        // MUESTRA DIRECTA SIN VERIFICACIONES
-        onDemoComplete();
-        console.log("onDemoComplete fue llamado");
-      }, 300);
+        // Verificación adicional para garantizar que onDemoComplete exista
+        if (typeof onDemoComplete === 'function') {
+          console.log("Ejecutando onDemoComplete para finalizar el demo");
+          onDemoComplete();
+          
+          // Verificación adicional para asegurar la visibilidad del menú radial
+          setTimeout(() => {
+            const menuContainer = document.getElementById('menu-radial-container');
+            if (menuContainer) {
+              console.log("Asegurando visibilidad del menú radial");
+              menuContainer.style.display = 'flex';
+              menuContainer.style.opacity = '1';
+              menuContainer.style.visibility = 'visible';
+              menuContainer.style.pointerEvents = 'auto';
+            }
+            
+            // Eliminar el overlay de carga después de la transición
+            const overlay = document.getElementById('demo-skip-overlay');
+            if (overlay) {
+              overlay.style.opacity = '0';
+              setTimeout(() => overlay.remove(), 300);
+            }
+          }, 1000);
+        } else {
+          console.error("Error: onDemoComplete no es una función válida");
+          alert("Error al finalizar el demo. Por favor, recarga la página.");
+        }
+      }, 500);
     } catch (error) {
       console.error("ERROR en handleSkipDemo:", error);
       alert("Error al intentar ir al mapa. Por favor, intenta de nuevo.");
@@ -222,77 +288,117 @@ const DemoMode: React.FC<DemoModeProps> = ({
 
       {/* Contenedor principal centrado */}
       <div className="relative w-full h-full flex flex-col items-center justify-center">
-        {/* Eliminamos el título duplicado, ya que aparece en el centro de la rueda */}
-
-        {/* Navegación por capas en el centro arriba del menú */}
-        {selectedMacro ? (
-          <div className="absolute top-8 left-1/2 transform -translate-x-1/2">
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex flex-col items-center gap-2"
-            >
-              <div className="bg-black/60 backdrop-blur-md rounded-full px-4 py-2
-                  border border-white/15 shadow-lg text-white flex items-center gap-2">
-                <Layers size={16} className="text-amber-400" />
-                <span className="text-sm">
-                  Explorando <span className="text-amber-300">{colombiaRegions[selectedMacro]?.name || selectedMacro}</span>
-                </span>
-              </div>
-            </motion.div>
-          </div>
-        ) : null}
-
-        {/* Menú Radial */}
+        {/* Menú Radial en modo demo - centrado en la pantalla */}
         <div className="flex-1 flex flex-col items-center justify-center">
-          <RadialMenu
-            onSelect={handleMenuSelect}
-            onStartTour={() => {
-              console.log("Demo Mode - Botón de inicio de tour presionado");
-              if (onStartTour) onStartTour();
-            }} // Pasar la función para iniciar el tour
-            isDemoMode={true}
-            highlightSection={currentSection}
-            selectedMacro={selectedMacro}
-          />
-          
-          {/* Guía paso a paso potente a la derecha del menú radial */}
-          <StepByStepGuide
-            currentSection={currentSection}
-            selectedMacro={selectedMacro}
-            currentStep={currentStep}
-            onSkipDemo={handleSkipDemo}
-          />
+          {/* Menú radial con tutorial interactivo superpuesto */}
+          <div className="relative">
+            {/* TUTORIAL INTERACTIVO - GUÍA NUMERADA CON DESCRIPCIONES */}
+            <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] -translate-x-1/2 -translate-y-1/2 pointer-events-none z-[100]">
+              {/* 1. Centro */}
+              <div className="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-[180%]">
+                <div className="flex flex-col items-center gap-2">
+                  <div className="bg-amber-500 w-7 h-7 rounded-full flex items-center justify-center text-black font-bold text-sm">1</div>
+                  <div className="bg-black/80 backdrop-blur-sm px-4 py-3 rounded-lg border border-amber-500/50 shadow-lg max-w-xs">
+                    <h3 className="text-amber-400 font-bold text-base mb-1">Centro: Lugares de Memoria</h3>
+                    <p className="text-white text-sm">
+                      El botón central inicia un recorrido guiado por los lugares de memoria histórica más significativos de Colombia.
+                    </p>
+                  </div>
+                </div>
+                <div className="w-[2px] h-[50px] bg-amber-500 absolute top-[100%] left-1/2 -translate-x-1/2"></div>
+              </div>
+              
+              {/* 2. Primer anillo: Macroregiones */}
+              <div className="absolute top-[15%] left-[10%]">
+                <div className="flex items-start gap-3">
+                  <div className="bg-amber-500 w-7 h-7 rounded-full flex items-center justify-center text-black font-bold text-sm">2</div>
+                  <div className="bg-black/80 backdrop-blur-sm px-4 py-3 rounded-lg border border-amber-500/50 shadow-lg max-w-xs">
+                    <h3 className="text-amber-400 font-bold text-base mb-1">Macroregiones</h3>
+                    <p className="text-white text-sm">
+                      El primer anillo muestra las 5 macroregiones de Colombia: Andina, Caribe, Pacífico, Amazonía y Orinoquía. Selecciona una para explorarla.
+                    </p>
+                  </div>
+                </div>
+                <div className="w-[100px] h-[1px] bg-amber-500 absolute top-[50%] left-[100%]"></div>
+              </div>
+              
+              {/* 3. Segundo anillo: Departamentos */}
+              <div className="absolute top-[40%] right-[5%]">
+                <div className="flex items-start gap-3">
+                  <div className="bg-amber-500 w-7 h-7 rounded-full flex items-center justify-center text-black font-bold text-sm">3</div>
+                  <div className="bg-black/80 backdrop-blur-sm px-4 py-3 rounded-lg border border-amber-500/50 shadow-lg max-w-xs">
+                    <h3 className="text-amber-400 font-bold text-base mb-1">Departamentos</h3>
+                    <p className="text-white text-sm">
+                      El segundo anillo muestra los departamentos dentro de la macroregión seleccionada. Haz clic para filtrar por departamento.
+                    </p>
+                  </div>
+                </div>
+                <div className="w-[80px] h-[1px] bg-amber-500 absolute top-[50%] right-[100%]"></div>
+              </div>
+              
+              {/* 4. Tercer anillo: Tipos de memoria */}
+              <div className="absolute bottom-[15%] left-[10%]">
+                <div className="flex items-start gap-3">
+                  <div className="bg-amber-500 w-7 h-7 rounded-full flex items-center justify-center text-black font-bold text-sm">4</div>
+                  <div className="bg-black/80 backdrop-blur-sm px-4 py-3 rounded-lg border border-amber-500/50 shadow-lg max-w-xs">
+                    <h3 className="text-amber-400 font-bold text-base mb-1">Tipos de Memoria</h3>
+                    <p className="text-white text-sm">
+                      El anillo exterior muestra las categorías de lugares de memoria: Caracterizados, Identificados, En Solicitud, etc. Selecciona uno para filtrar.
+                    </p>
+                  </div>
+                </div>
+                <div className="w-[60px] h-[1px] bg-amber-500 absolute top-[30%] left-[100%]"></div>
+              </div>
+            </div>
+            
+            {/* El menú radial */}
+            <RadialMenu
+              onSelect={handleMenuSelect}
+              onStartTour={() => {
+                console.log("Demo Mode - Botón de inicio de tour presionado");
+                if (onStartTour) onStartTour();
+              }}
+              isDemoMode={true}
+              highlightSection={currentSection}
+              selectedMacro={selectedMacro}
+            />
+          </div>
         </div>
-
-        {/* Controles inferiores */}
+        // Añade esto justo debajo del div que contiene el menú radial
+<div 
+  className="fixed top-0 left-0 right-0 z-[9999] bg-red-500 text-white text-center p-4"
+  onClick={() => {
+    console.log("Banner de depuración clickeado");
+    handleSkipDemo();
+  }}
+>
+  ¡MODO DEMO ACTIVO! Haz clic aquí si no puedes interactuar con el botón "IR AL MAPA"
+</div>
+        
+        {/* COMPONENTE MODIFICADO: Controles inferiores - CENTRADOS */}
         <div className="absolute bottom-20 w-full flex flex-col items-center gap-8">
-          {/* Indicadores de progreso centrados */}
-          <div className="flex gap-2">
+          {/* Indicadores de progreso CENTRADOS */}
+          <div className="flex justify-center gap-2">
             <div className={`w-16 h-2 rounded-full transition-all ${currentStep === 0 ? 'bg-white' : 'bg-white/20'}`} />
             <div className={`w-8 h-2 rounded-full transition-all ${currentStep === 1 ? 'bg-white' : 'bg-white/20'}`} />
             <div className={`w-8 h-2 rounded-full transition-all ${currentStep === 2 ? 'bg-white' : 'bg-white/20'}`} />
             <div className={`w-8 h-2 rounded-full transition-all ${currentStep === 3 ? 'bg-white' : 'bg-white/20'}`} />
           </div>
           
-          {/* Botón de Ir al mapa GRANDE y CENTRADO */}
-          <div className="flex justify-center">
-            <button
-              onClick={() => {
-                console.log("Botón Ir al mapa presionado");
-                handleSkipDemo();
-              }}
-              className="px-10 py-5 rounded-full bg-amber-500 hover:bg-amber-600 
-                backdrop-blur-sm flex items-center gap-4 group transition-all duration-300
-                border-2 border-amber-400/50 shadow-xl animate-pulse"
-            >
-              <span className="text-white font-bold text-xl">IR AL MAPA</span>
-              <ChevronRight className="w-8 h-8 text-white group-hover:translate-x-1 transition-transform" />
-            </button>
-          </div>
+          {/* Botón IR AL MAPA grande y centrado */}
+          <button
+            onClick={() => {
+              console.log("Botón IR AL MAPA clickeado");
+              handleSkipDemo();
+            }}
+            className="px-10 py-5 rounded-full bg-amber-500 hover:bg-amber-600 
+              backdrop-blur-sm flex items-center gap-4 group transition-all duration-300
+              border-2 border-amber-400/50 shadow-xl animate-pulse"
+          >
+            <span className="text-white font-bold text-xl">IR AL MAPA</span>
+            <ChevronRight className="w-8 h-8 text-white group-hover:translate-x-1 transition-transform" />
+          </button>
         </div>
-
-        {/* Eliminamos el botón de la esquina superior derecha */}
       </div>
     </div>
   );

@@ -31,6 +31,8 @@ const StepByStepGuide: React.FC<StepByStepGuideProps> = ({
     {
       title: "Paso 1: Selecciona una Macroregión",
       content: [
+        "El Mapa de Memoria Histórica te permite explorar lugares significativos en la construcción de paz y memoria en Colombia.",
+        "",
         "En el círculo interior del menú radial encontrarás las 5 macroregiones de Colombia:",
         "• Región Andina: Centro montañoso del país",
         "• Región Caribe: Costa norte de Colombia",

@@ -1,15 +1,16 @@
 // src/components/RadialMenuGuide.tsx
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, Map, Layers, Globe, Info, X, Target } from 'lucide-react';
+import { ChevronRight, Map, Layers, Globe, Info, X, Target, ArrowRight, ChevronDown } from 'lucide-react';
 
 interface RadialGuideStep {
   id: string;
   title: string;
-  content: string;
+  content: string[];
   position: 'center' | 'inner' | 'middle' | 'outer';
   highlightSection?: 'center' | 'macro' | 'department' | 'memory';
   icon?: React.ReactNode;
+  arrow?: React.ReactNode;
 }
 
 interface RadialMenuGuideProps {
@@ -30,47 +31,72 @@ const RadialMenuGuide: React.FC<RadialMenuGuideProps> = ({
   const [currentStep, setCurrentStep] = useState(0);
   const [visible, setVisible] = useState(isOpen);
 
-  // Serie de pasos que guían al usuario sobre cómo usar el menú radial
+  // Serie de pasos mejorada que guían al usuario sobre cómo usar el menú radial
   const guideSteps: RadialGuideStep[] = [
-    {
-      id: 'intro',
-      title: "Mapa de Memoria Histórica",
-      content: "Este mapa te permite explorar los lugares de memoria histórica de Colombia. Aprenderás a usar el menú radial para navegar por las diferentes regiones y tipos de lugares.",
-      position: 'center',
-      highlightSection: 'center',
-      icon: <Info className="w-6 h-6 text-amber-400" />
-    },
     {
       id: 'center',
       title: "Centro del Menú",
-      content: "El botón central te permite iniciar un recorrido guiado por los lugares de memoria más importantes de Colombia.",
+      content: [
+        "El botón central inicia un recorrido guiado por los lugares de memoria más importantes de Colombia.",
+        "",
+        "👉 Haz clic aquí para comenzar el tour guiado"
+      ],
       position: 'center',
       highlightSection: 'center',
-      icon: <Target className="w-6 h-6 text-amber-400" />
+      icon: <Target className="w-6 h-6 text-amber-400" />,
+      arrow: <ChevronDown className="absolute -left-12 bottom-1/3 transform -rotate-90 text-amber-400 w-12 h-12 animate-pulse" />
     },
     {
       id: 'macro',
       title: "Macroregiones",
-      content: "El anillo interior muestra las macroregiones de Colombia. Haz clic en un segmento para explorar una región específica del país.",
+      content: [
+        "El anillo interior muestra las 5 macroregiones de Colombia:",
+        "• Región Andina: Centro montañoso",
+        "• Región Caribe: Costa norte",
+        "• Región Pacífica: Costa occidental",
+        "• Región Amazonía: Selva tropical al sur",
+        "• Región Orinoquía: Llanos orientales",
+        "",
+        "👉 Haz clic en una región para explorarla"
+      ],
       position: 'inner',
       highlightSection: 'macro',
-      icon: <Globe className="w-6 h-6 text-amber-400" />
+      icon: <Globe className="w-6 h-6 text-amber-400" />,
+      arrow: <ArrowRight className="absolute -left-20 top-1/2 transform -rotate-45 text-amber-400 w-10 h-10 animate-pulse" />
     },
     {
       id: 'departments',
       title: "Departamentos",
-      content: "El anillo medio muestra los departamentos dentro de la macroregión seleccionada. Selecciona uno para concentrarte en esa área.",
+      content: [
+        "El anillo medio muestra los departamentos de la macroregión seleccionada.",
+        "",
+        "Cada departamento contiene diferentes lugares de memoria histórica documentados.",
+        "",
+        "👉 Selecciona un departamento para filtrar lugares específicos"
+      ],
       position: 'middle',
       highlightSection: 'department',
-      icon: <Map className="w-6 h-6 text-amber-400" />
+      icon: <Map className="w-6 h-6 text-amber-400" />,
+      arrow: <ArrowRight className="absolute -left-20 top-1/2 transform -rotate-135 text-amber-400 w-10 h-10 animate-pulse" />
     },
     {
       id: 'memory',
       title: "Tipos de Memoria",
-      content: "El anillo exterior muestra las categorías de lugares de memoria. Cada color representa un tipo diferente: caracterizados, identificados, solicitud, etc.",
+      content: [
+        "El anillo exterior muestra las categorías de lugares de memoria:",
+        "",
+        "• Caracterizados: Sitios documentados",
+        "• Identificados: En investigación",
+        "• En Solicitud: Propuestos",
+        "• Lugares del Horror: Sitios de violaciones a DDHH",
+        "• Espacios de Sanación: Lugares de reconciliación",
+        "",
+        "👉 Haz clic para filtrar por categoría"
+      ],
       position: 'outer',
       highlightSection: 'memory',
-      icon: <Layers className="w-6 h-6 text-amber-400" />
+      icon: <Layers className="w-6 h-6 text-amber-400" />,
+      arrow: <ArrowRight className="absolute -left-20 bottom-1/2 transform rotate-45 text-amber-400 w-10 h-10 animate-pulse" />
     }
   ];
 
@@ -128,12 +154,12 @@ const RadialMenuGuide: React.FC<RadialMenuGuideProps> = ({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.4, ease: [0.19, 1, 0.22, 1] }}
-          className={`fixed z-[9998] max-w-[280px] ${getTooltipPosition()}`}
+          className={`fixed z-[9998] max-w-[320px] ${getTooltipPosition()}`}
         >
           <div className="bg-black/80 backdrop-blur-md rounded-lg overflow-hidden shadow-xl border border-white/10">
             <div className="relative">
               {/* Header con título */}
-              <div className="px-4 py-3 border-b border-white/10 flex justify-between items-center">
+              <div className="px-4 py-3 border-b border-white/10 flex justify-between items-center bg-gradient-to-r from-amber-500/20 to-transparent">
                 <div className="flex items-center gap-2">
                   {guideSteps[currentStep].icon}
                   <h3 className="text-white font-medium text-sm">
@@ -150,9 +176,11 @@ const RadialMenuGuide: React.FC<RadialMenuGuideProps> = ({
               
               {/* Contenido */}
               <div className="p-4">
-                <p className="text-white/90 text-sm leading-relaxed">
-                  {guideSteps[currentStep].content}
-                </p>
+                {guideSteps[currentStep].content.map((line, index) => (
+                  <p key={index} className={`text-white/90 text-sm leading-relaxed ${line === "" ? "mb-2" : "mb-1"} ${line.startsWith("👉") ? "font-bold text-amber-300 mt-2" : ""} ${line.startsWith("•") ? "ml-2" : ""}`}>
+                    {line}
+                  </p>
+                ))}
               </div>
               
               {/* Footer con navegación */}
@@ -178,6 +206,13 @@ const RadialMenuGuide: React.FC<RadialMenuGuideProps> = ({
                   <ChevronRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
                 </button>
               </div>
+              
+              {/* Flecha animada que apunta a la sección relevante */}
+              {guideSteps[currentStep].arrow && (
+                <div className="pointer-events-none">
+                  {guideSteps[currentStep].arrow}
+                </div>
+              )}
             </div>
           </div>
         </motion.div>

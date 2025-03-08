@@ -305,22 +305,63 @@ export default function App() {
    * Inicia Tour Guiado
    */
   async function startTour() {
-    console.log("Función startTour llamada en App.tsx");
+    console.log("==== LLAMADA A startTour en App.tsx ====");
+    console.log("Estado actual de la app:", appState.stage);
+    console.log("Mapa disponible:", mapRef.current ? "Sí" : "No");
+    console.log("Mapa cargado:", mapLoadedRef.current ? "Sí" : "No");
+    
     if (!mapRef.current || !mapLoadedRef.current) {
-      console.error("No hay mapa disponible para iniciar el tour");
+      console.error("ERROR: No hay mapa disponible para iniciar el tour");
+      alert("Espera a que el mapa termine de cargar para iniciar el recorrido");
       return;
     }
     
-    console.log("Iniciando startGuidedTour...");
-    startGuidedTour(
-      mapRef,
-      mapLoadedRef,
-      setDroneActive,
-      setAppState,
-      renderTourMessage,
-      [], // Array vacío para indicar que use el tour por defecto
-      handleDemoComplete // Pasar la función para saltar el demo
-    );
+    // Añadir mensaje en la interfaz antes de iniciar el tour
+    const tourStartMessage = document.createElement('div');
+    tourStartMessage.id = 'tour-start-message';
+    tourStartMessage.style.cssText = `
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(0,0,0,0.8);
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      font-size: 18px;
+      text-align: center;
+      z-index: 9999;
+      max-width: 80%;
+      border: 1px solid rgba(255,165,0,0.3);
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    `;
+    tourStartMessage.innerHTML = `
+      <h2 style="margin-bottom: 10px; color: #ffb74d; font-size: 24px;">Iniciando Recorrido</h2>
+      <p>Bienvenido al tour guiado por los lugares de memoria histórica de Colombia.</p>
+      <p style="margin-top: 10px;">El recorrido te llevará por diversos sitios significativos para la construcción de memoria del país.</p>
+    `;
+    document.body.appendChild(tourStartMessage);
+    
+    console.log("Añadido mensaje de inicio de tour");
+    console.log("Iniciando startGuidedTour en 2 segundos...");
+    
+    // Iniciar el tour después de mostrar el mensaje
+    setTimeout(() => {
+      if (tourStartMessage) {
+        tourStartMessage.remove();
+      }
+      
+      console.log("Llamando a startGuidedTour...");
+      startGuidedTour(
+        mapRef,
+        mapLoadedRef,
+        setDroneActive,
+        setAppState,
+        renderTourMessage,
+        [], // Array vacío para indicar que use el tour por defecto
+        handleDemoComplete // Pasar la función para saltar el demo
+      );
+    }, 2000);
   }
 
   /**
@@ -463,14 +504,9 @@ export default function App() {
         });
       }
       
-      // Quitar cualquier overlay de carga que pudiera haberse añadido
-      const overlay = document.getElementById('demo-skip-overlay');
-      if (overlay) {
-        overlay.remove();
-      }
-      
       // Asegurar que el menú radial sea visible (importante)
       setTimeout(() => {
+        // Forzar visibilidad del menú radial con múltiples comprobaciones
         const menuContainer = document.getElementById('menu-radial-container');
         if (menuContainer) {
           console.log("Forzando visibilidad del menú radial");
@@ -478,11 +514,19 @@ export default function App() {
           menuContainer.style.opacity = '1';
           menuContainer.style.visibility = 'visible';
           menuContainer.style.pointerEvents = 'auto';
+          menuContainer.style.zIndex = '9999';
           
-          // Mostrar la guía del menú radial
-          setShowRadialGuide(true);
+          // NO mostramos la guía del menú radial en la transición a app
+          // Sólo nos aseguramos que el menú sea visible
+          if (menuContainer) {
+            menuContainer.style.display = 'flex';
+            menuContainer.style.opacity = '1';
+            menuContainer.style.visibility = 'visible';
+          }
         } else {
           console.error("No se pudo encontrar el contenedor del menú radial");
+          // Forzar recarga de componentes críticos
+          setAppState(prev => ({ ...prev }));
         }
       }, 1000);
     } catch (error) {
@@ -757,14 +801,7 @@ export default function App() {
                 />
               </div>
               
-              {/* Guía interactiva del menú radial */}
-              <RadialMenuGuide 
-                isOpen={showRadialGuide}
-                onClose={() => setShowRadialGuide(false)}
-                onComplete={() => setShowRadialGuide(false)}
-                isDemoMode={false}
-                setHighlightSection={setHighlightSection}
-              />
+              {/* Eliminamos la guía del menú radial en modo app */}
               
               
               {/* LocationContext en el centro inferior */}

@@ -975,10 +975,21 @@ export function startGuidedTour(
   specificLocations: string[] = [], // Nuevo parámetro para recorridos temáticos
   onDemoComplete?: () => void // Función para saltar el demo
 ) {
-  if (!mapRef.current || !mapLoadedRef.current) return;
+  console.log("===== INICIANDO TOUR GUIADO =====");
+  console.log("Estado del mapa:", mapRef.current ? "Disponible" : "No disponible");
+  console.log("Mapa cargado:", mapLoadedRef.current ? "Sí" : "No");
+  console.log("Ubicaciones específicas:", specificLocations.length > 0 ? specificLocations : "Tour estándar");
+  console.log("Handler de demo complete:", onDemoComplete ? "Disponible" : "No disponible");
+  
+  if (!mapRef.current || !mapLoadedRef.current) {
+    console.error("Error: No se puede iniciar el tour porque el mapa no está disponible");
+    return;
+  }
   
   const map = mapRef.current;
+  console.log("Desactivando modo drone");
   setDroneActive(false);
+  console.log("Cambiando estado de la aplicación a 'tour'");
   setAppState((prev: any) => ({ ...prev, stage: 'tour' }));
   
   // Crear marcadores temporales para el tour
